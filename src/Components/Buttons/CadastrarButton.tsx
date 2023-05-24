@@ -9,7 +9,7 @@ const CadastrarButton = ({ active, ...props }: buttonLogin) => {
       {...props}
       className={`${
         active ? "!bg-[#3c75cc] !text-white" : "!bg-transparent !text-gray-700"
-      } h-[30px] w-[10rem] px-4 py-auto rounded-md`}>
+      } h-[30px] w-[10rem]  px-4 py-auto rounded-md`}>
       Cadastrar
     </button>
   );
