@@ -10,7 +10,7 @@ const SocialButtons = () => {
         </a>
         <div className="flex space-x-4 ">
           <a
-            href="#"
+            href=""
             className="bg-[#e2e2e2] p-3 rounded-full duration-300 text-[#e44a2fc0] hover:bg-[#e44a2fc0] hover:text-white">
             <FaGoogle size={18} />
           </a>
