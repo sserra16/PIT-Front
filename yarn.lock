@@ -215,6 +215,7 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
+<<<<<<< HEAD
 "@esbuild/android-arm64@0.17.19":
   version "0.17.19"
   resolved "https://registry.yarnpkg.com/@esbuild/android-arm64/-/android-arm64-0.17.19.tgz#bafb75234a5d3d1b690e7c2956a599345e84a2fd"
@@ -319,6 +320,19 @@
   version "0.17.19"
   resolved "https://registry.yarnpkg.com/@esbuild/win32-ia32/-/win32-ia32-0.17.19.tgz#95ad43c62ad62485e210f6299c7b2571e48d2b03"
   integrity sha512-eggDKanJszUtCdlVs0RB+h35wNlb5v4TWEkq4vZcmVt5u/HiDZrTXe2bWFQUez3RgNHwx/x4sk5++4NSSicKkw==
+=======
+"@emotion/is-prop-valid@^0.8.2":
+  version "0.8.8"
+  resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz"
+  integrity sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==
+  dependencies:
+    "@emotion/memoize" "0.7.4"
+
+"@emotion/memoize@0.7.4":
+  version "0.7.4"
+  resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.7.4.tgz"
+  integrity sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==
+>>>>>>> 53b20a028a4fab1f0058b985a9e23b1eeab9460d
 
 "@esbuild/win32-x64@0.17.19":
   version "0.17.19"
@@ -1134,6 +1148,15 @@ fraction.js@^4.2.0:
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
+framer-motion@^10.12.16:
+  version "10.12.16"
+  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-10.12.16.tgz"
+  integrity sha512-w/SfWEIWJkYSgRHYBmln7EhcNo31ao8Xexol8lGXf1pR/tlnBtf1HcxoUmEiEh6pacB4/geku5ami53AAQWHMQ==
+  dependencies:
+    tslib "^2.4.0"
+  optionalDependencies:
+    "@emotion/is-prop-valid" "^0.8.2"
+
 fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
@@ -1647,7 +1670,11 @@ queue-microtask@^1.2.2:
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
 
+<<<<<<< HEAD
 react-dom@^18.2.0:
+=======
+"react-dom@^16 || ^17 || ^18", react-dom@^18.0.0, react-dom@^18.2.0, react-dom@>=16.8, react-dom@>=16.8.0:
+>>>>>>> 53b20a028a4fab1f0058b985a9e23b1eeab9460d
   version "18.2.0"
   resolved "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   integrity sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==
@@ -1680,7 +1707,11 @@ react-router@6.11.2:
   dependencies:
     "@remix-run/router" "1.6.2"
 
+<<<<<<< HEAD
 react@^18.2.0:
+=======
+react@*, "react@^16 || ^17 || ^18", react@^18.0.0, react@^18.2.0, react@>=16.8, react@>=16.8.0:
+>>>>>>> 53b20a028a4fab1f0058b985a9e23b1eeab9460d
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -1895,6 +1926,11 @@ tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.4.0:
+  version "2.5.2"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.2.tgz"
+  integrity sha512-5svOrSA2w3iGFDs1HibEVBGbDrAY82bFQ3HZ3ixB+88nsbsWQoKqDRb5UBYAUPEzbBn6dAp5gRNXglySbx1MlA==
 
 tsutils@^3.21.0:
   version "3.21.0"

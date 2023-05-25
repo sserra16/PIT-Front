@@ -13,6 +13,7 @@
     "@headlessui/react": "^1.7.14",
     "@unform/web": "^2.1.6",
     "axios": "^1.4.0",
+    "framer-motion": "^10.12.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
