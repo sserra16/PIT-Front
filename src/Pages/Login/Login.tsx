@@ -6,6 +6,7 @@ import { HiKey, HiEye, HiUser } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
 import { Input } from "../../Components/Input/Input.tsx";
 import { Tab } from "@headlessui/react";
+import { motion } from "framer-motion";
 
 type dataLogin = {
   email: string;
@@ -13,7 +14,7 @@ type dataLogin = {
   senha: string;
 };
 
-function classNames(...classes: any[]) {
+function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -55,7 +56,7 @@ const Login = () => {
   return (
     <div className="w-full flex flex-col sm:flex-row bg-login bg-cover">
       <div className="flex justify-center w-full lg:w-[40%] bg-white items-center h-screen">
-        <div className="w-full  h-full lg:h-[70%] px-16 bg-white flex flex-col justify-center items-center ">
+        <div className="w-full h-full lg:h-[70%] px-32 bg-white flex flex-col justify-center items-center ">
           <Tab.Group>
             <Tab.List className="flex gap-1 w-full bg-gray-200 p-1 shadow-sm rounded-md items-center">
               <Tab
@@ -78,20 +79,23 @@ const Login = () => {
                       : "text-gray-700 duration-500"
                   )
                 }>
-                <p className="text-lg">Logar</p>
+                <p>Logar</p>
               </Tab>
             </Tab.List>
-            <Tab.Panels>
-              <Tab.Panel className="rounded p-7 mmd:p-1 w-full routedark">
+            <Tab.Panels className="w-full transition-all">
+              <Tab.Panel className="rounded mmd:p-1 w-full">
                 <Form ref={CadastroFormRef} onSubmit={handleSubmitCadastro}>
-                  <div className="w-full">
+                  <motion.div
+                    initial={{ x: 100 }}
+                    whileInView={{ x: 0 }}
+                    className="w-full">
                     <div className="flex flex-col w-full my-10">
                       <Input
                         name="username"
                         type="text"
                         placeholderSel="username"
                         labelSel="Username:"
-                        classSel="w-full lg: px-3 py-2 text-gray-700 bg-transparent outline-none"
+                        classSel="w-full lg:px-3 py-2 text-gray-700 bg-transparent outline-none"
                         maxLength={28}
                         iconSel={<HiUser className="text-gray-700" />}
                         htmlforSel="username"
@@ -123,7 +127,7 @@ const Login = () => {
                         //value={}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
@@ -136,9 +140,12 @@ const Login = () => {
                   </div>
                 </Form>
               </Tab.Panel>
-              <Tab.Panel className="rounded p-7 mmd:p-1 routedark">
+              <Tab.Panel className="rounded mmd:p-1 w-full">
                 <Form ref={LoginFormRef} onSubmit={handleSubmitLogin}>
-                  <div className="w-full">
+                  <motion.div
+                    initial={{ x: 100 }}
+                    whileInView={{ x: 0 }}
+                    className="w-full">
                     <div className="flex flex-col w-full my-10">
                       <Input
                         name="email"
@@ -166,7 +173,7 @@ const Login = () => {
                         //value={}
                       />
                     </div>
-                  </div>
+                  </motion.div>
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
