@@ -1,4 +1,5 @@
 import { FaGoogle, FaApple, FaFacebookF } from "react-icons/fa";
+import { api } from "../../api/api";
 
 const SocialButtons = () => {
   return (
@@ -11,6 +12,9 @@ const SocialButtons = () => {
         <div className="flex space-x-4 ">
           <a
             href=""
+            onClick={() => {
+              api.get("/google/redirect");
+            }}
             className="bg-[#e2e2e2] p-3 rounded-full duration-300 text-[#e44a2fc0] hover:bg-[#e44a2fc0] hover:text-white">
             <FaGoogle size={18} />
           </a>
