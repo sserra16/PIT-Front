@@ -1,11 +1,13 @@
 import SocialButtons from "../../Components/Buttons/SocialButtons.tsx";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Form } from "@unform/web";
 import { api } from "../../api/api.ts";
 import { HiKey, HiEye, HiUser } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
 import { Input } from "../../Components/Input/Input.tsx";
 import { Tab } from "@headlessui/react";
+import { FiSun } from "react-icons/fi";
+import { HiOutlineMoon } from "react-icons/hi";
 
 type dataLogin = {
   email: string;
@@ -20,6 +22,16 @@ function classNames(...classes: any[]) {
 const Login = () => {
   const CadastroFormRef = useRef(null);
   const LoginFormRef = useRef(null);
+
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    if (dark == true) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [dark]);
 
   const handleSubmitCadastro = async (data: dataLogin) => {
     await api
@@ -54,10 +66,25 @@ const Login = () => {
 
   return (
     <div className="w-full flex flex-col sm:flex-row bg-login bg-cover">
-      <div className="flex justify-center w-full lg:w-[40%] bg-white items-center h-screen">
-        <div className="w-full  h-full lg:h-[70%] px-16 bg-white flex flex-col justify-center items-center ">
+      <div className="flex justify-center w-full lg:w-[40%] dark:bg-[#2b2b2b] bg-white items-center h-screen duration-300">
+        <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] mt-[2rem] flex ">
+          {dark ? (
+            <FiSun
+              onClick={() => {
+                setDark(false);
+              }}
+            />
+          ) : (
+            <HiOutlineMoon
+              onClick={() => {
+                setDark(true);
+              }}
+            />
+          )}
+        </div>
+        <div className="w-full  h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
           <Tab.Group>
-            <Tab.List className="flex gap-1 w-full bg-gray-200 p-1 shadow-sm rounded-md items-center">
+            <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center">
               <Tab
                 className={({ selected }) =>
                   classNames(
@@ -66,7 +93,8 @@ const Login = () => {
                       ? "!bg-[#3c75cc] text-white"
                       : "text-gray-700 duration-500"
                   )
-                }>
+                }
+              >
                 <p>Cadastrar</p>
               </Tab>
               <Tab
@@ -77,7 +105,8 @@ const Login = () => {
                       ? "!bg-[#3c75cc] text-white"
                       : "text-gray-700 duration-500"
                   )
-                }>
+                }
+              >
                 <p className="text-lg">Logar</p>
               </Tab>
             </Tab.List>
@@ -127,8 +156,9 @@ const Login = () => {
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 ">
-                      Entrar
+                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
+                    >
+                      Cadastrar
                     </button>
                   </div>
                   <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
@@ -170,7 +200,8 @@ const Login = () => {
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 ">
+                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
+                    >
                       Entrar
                     </button>
                   </div>
