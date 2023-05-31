@@ -128,7 +128,7 @@ const Login = () => {
             />
           )}
         </div>
-        <div className="w-full  h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
+        <div className="w-full h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
           <Tab.Group>
             <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center duration-300">
               <Tab
@@ -139,8 +139,7 @@ const Login = () => {
                       ? "!bg-[#3c75cc] text-white"
                       : "text-gray-700 duration-500"
                   )
-                }
-              >
+                }>
                 <p>Cadastrar</p>
               </Tab>
               <Tab
@@ -196,7 +195,7 @@ const Login = () => {
                         iconSel={<HiKey className="text-gray-700" />}
                         iconpassSel={
                           <button type="button" onClick={Changetype}>
-                            <HiEye className="text-gray-700 " />{" "}
+                            <HiEye className="text-gray-700" />{" "}
                           </button>
                         }
                         //value={}
@@ -259,6 +258,7 @@ const Login = () => {
                       </button>
                     </div>
                   </motion.div>
+                 
                   <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
                     <SocialButtons />
                   </div>
