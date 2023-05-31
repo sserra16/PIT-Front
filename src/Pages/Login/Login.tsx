@@ -83,7 +83,7 @@ const Login = () => {
             />
           )}
         </div>
-        <div className="w-full  h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
+        <div className="w-full h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
           <Tab.Group>
             <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center">
               <Tab
@@ -94,8 +94,7 @@ const Login = () => {
                       ? "!bg-[#3c75cc] text-white"
                       : "text-gray-700 duration-500"
                   )
-                }
-              >
+                }>
                 <p>Cadastrar</p>
               </Tab>
               <Tab
@@ -114,7 +113,7 @@ const Login = () => {
               <Tab.Panel className="rounded mmd:p-1 w-full">
                 <Form ref={CadastroFormRef} onSubmit={handleSubmitCadastro}>
                   <motion.div
-                    initial={{ x: 100 }}
+                    initial={{ x: -100 }}
                     whileInView={{ x: 0 }}
                     className="w-full">
                     <div className="flex flex-col w-full my-10">
@@ -149,7 +148,7 @@ const Login = () => {
                         iconSel={<HiKey className="text-gray-700" />}
                         iconpassSel={
                           <button type="button" onClick={Changetype}>
-                            <HiEye className="text-gray-700 " />{" "}
+                            <HiEye className="text-gray-700" />{" "}
                           </button>
                         }
                         //value={}
@@ -159,8 +158,7 @@ const Login = () => {
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
-                    >
+                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white rounded-md hover:bg-[#284eb6] duration-200 ">
                       Cadastrar
                     </button>
                   </div>
@@ -206,8 +204,7 @@ const Login = () => {
                   <div className="border flex items-center w-full rounded-md">
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
-                    >
+                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 ">
                       Entrar
                     </button>
                   </div>
