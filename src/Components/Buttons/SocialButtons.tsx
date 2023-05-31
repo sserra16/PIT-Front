@@ -5,7 +5,7 @@ const SocialButtons = () => {
   return (
     <>
       <div className="flex flex-col w-full items-center  justify-center ">
-        <a className="text-[#000] text-sm underline py-5 cursor-pointer duration-300">
+        <a className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
           Esqueceu sua senha?
         </a>
         <div className="flex space-x-4 ">

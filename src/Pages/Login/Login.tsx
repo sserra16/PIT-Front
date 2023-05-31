@@ -8,7 +8,12 @@ import { Input } from "../../Components/Input/Input.tsx";
 import { Tab } from "@headlessui/react";
 import { FiSun } from "react-icons/fi";
 import { HiOutlineMoon } from "react-icons/hi";
+import { AiOutlineClose } from "react-icons/ai";
 import { motion } from "framer-motion";
+import Snackbar, { SnackbarOrigin } from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import React from "react";
+import { SlideProps } from "@mui/material";
 
 type dataLogin = {
   email: string;
@@ -35,6 +40,10 @@ const Login = () => {
   }, [dark]);
 
   const handleSubmitCadastro = async (data: dataLogin) => {
+
+    if (data.username === "") {
+        setOpen7(true);
+    }
     await api
       .post("/cadastro", {
         username: data.username,
@@ -65,7 +74,41 @@ const Login = () => {
     }
   };
 
+  /* SnackBar */
+  type TransitionProps = Omit<SlideProps, "direction">;
+
+  const [transition, setTransition] =
+    React.useState<React.ComponentType<TransitionProps> | undefined>(undefined);
+
+  const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref
+  ) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
+  const [open7, setOpen7] = useState(false);
+
+  const [state, setState] = React.useState<any>({
+    openn: false,
+    vertical: "top",
+    horizontal: "right",
+  });
+  const { vertical, horizontal, openn } = state;
+
+  const handleClose7 = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen7(false);
+  };
+
   return (
+    <>
     <div className="w-full flex flex-col sm:flex-row bg-login bg-cover">
       <div className="flex justify-center w-full lg:w-[40%] dark:bg-[#2b2b2b] bg-white items-center h-screen duration-300">
         <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] mt-[2rem] flex ">
@@ -74,18 +117,20 @@ const Login = () => {
               onClick={() => {
                 setDark(false);
               }}
+              className="cursor-pointer"
             />
           ) : (
             <HiOutlineMoon
               onClick={() => {
                 setDark(true);
               }}
+              className="cursor-pointer"
             />
           )}
         </div>
         <div className="w-full  h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
           <Tab.Group>
-            <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center">
+            <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center duration-300">
               <Tab
                 className={({ selected }) =>
                   classNames(
@@ -106,7 +151,8 @@ const Login = () => {
                       ? "!bg-[#3c75cc] text-white"
                       : "text-gray-700 duration-500"
                   )
-                }>
+                }
+              >
                 <p>Logar</p>
               </Tab>
             </Tab.List>
@@ -114,9 +160,10 @@ const Login = () => {
               <Tab.Panel className="rounded mmd:p-1 w-full">
                 <Form ref={CadastroFormRef} onSubmit={handleSubmitCadastro}>
                   <motion.div
-                    initial={{ x: 100 }}
+                    initial={{ x: -100 }}
                     whileInView={{ x: 0 }}
-                    className="w-full">
+                    className="w-full"
+                  >
                     <div className="flex flex-col w-full my-10">
                       <Input
                         name="username"
@@ -155,15 +202,15 @@ const Login = () => {
                         //value={}
                       />
                     </div>
+                    <div className=" flex items-center w-full rounded-md">
+                      <button
+                        type="button"
+                        className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
+                      >
+                        Cadastrar
+                      </button>
+                    </div>
                   </motion.div>
-                  <div className="border flex items-center w-full rounded-md">
-                    <button
-                      type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
-                    >
-                      Cadastrar
-                    </button>
-                  </div>
                   <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
                     <SocialButtons />
                   </div>
@@ -172,9 +219,10 @@ const Login = () => {
               <Tab.Panel className="rounded mmd:p-1 w-full">
                 <Form ref={LoginFormRef} onSubmit={handleSubmitLogin}>
                   <motion.div
-                    initial={{ x: 100 }}
+                    initial={{ x: -100 }}
                     whileInView={{ x: 0 }}
-                    className="w-full">
+                    className="w-full"
+                  >
                     <div className="flex flex-col w-full my-10">
                       <Input
                         name="email"
@@ -202,15 +250,15 @@ const Login = () => {
                         //value={}
                       />
                     </div>
+                    <div className="flex items-center w-full rounded-md">
+                      <button
+                        type="submit"
+                        className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
+                      >
+                        Entrar
+                      </button>
+                    </div>
                   </motion.div>
-                  <div className="border flex items-center w-full rounded-md">
-                    <button
-                      type="submit"
-                      className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 "
-                    >
-                      Entrar
-                    </button>
-                  </div>
                   <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
                     <SocialButtons />
                   </div>
@@ -236,6 +284,28 @@ const Login = () => {
           </div>
         </div> */}
     </div>
+    <Snackbar
+        open={open7}
+        autoHideDuration={2000}
+        onClose={handleClose7}
+        className="flex items-center !z-[90000]"
+        TransitionComponent={transition}
+        key={transition ? transition.name : ""}
+        anchorOrigin={{ vertical, horizontal }}
+      >
+        <Alert
+          severity="error"
+          className="flex items-center w-full mcp:w-[60%]  shadow-lg !shadow-green-500/50"
+        >
+          <div className="flex items-center gap-5">
+            <p className="w-full text-lg">O username é obrigatório!</p>
+            <div onClick={handleClose7} className="cursor-pointer">
+              <AiOutlineClose />
+            </div>
+          </div>
+        </Alert>
+      </Snackbar>
+    </>
   );
 };
 

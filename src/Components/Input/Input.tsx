@@ -45,9 +45,9 @@ export const Input = ({
   return (
     <div {...rest}>
       <div>
-        <label htmlFor={name} className="!mb-0 text-gray-700 dark:text-gray-300">{labelSel}</label>
+        <label htmlFor={name} className="!mb-0 text-gray-700 dark:text-gray-300 duration-300">{labelSel}</label>
       </div>
-      <div className="!mt-0 flex w-full items-center px-2 justify-between border border-gray-300 rounded-md mx-auto my-3">
+      <div className="!mt-0 placeholder:text-gray-700 dark:placeholder:text-gray-300 flex w-full items-center px-2 justify-between border border-gray-300 dark:border-gray-700 duration-300 rounded-md mx-auto my-3">
         {iconSel}
         <input
           name={name}
