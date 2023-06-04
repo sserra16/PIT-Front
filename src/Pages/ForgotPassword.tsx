@@ -1,42 +1,28 @@
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 import { MdEmail } from "react-icons/md";
 import { Input } from "../Components/Input/Input";
 import { Form } from "@unform/web";
-import { HiKey, HiEye, HiUser } from "react-icons/hi";
+import { api } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
 function ForgotPassword() {
   const CadastroFormRef = useRef(null);
-
-  const [inputType, setInputType] = useState("password");
-
-  const Changetype = () => {
-    if (inputType === "password") {
-      setInputType("text");
-    } else {
-      setInputType("password");
-    }
-  };
-
-  const handleSubmitCadastro = async () => {
-    /* 
-    if (data.username === "") {
-        setOpen7(true);
-    }
+  const history = useNavigate();
+  
+  const handleSubmitCadastro = async (data: { email: string }) => {
     await api
-      .post("/cadastro", {
-        username: data.username,
+      .post("/forgotpassword", {
         email: data.email,
-        password: data.senha,
       })
       .then((res) => console.log(res))
-      .catch((error) => console.error(error)); */
+      .catch((error) => console.error(error));
   };
 
   return (
     <Form ref={CadastroFormRef} onSubmit={handleSubmitCadastro}>
       <div className="w-full flex flex-col sm:flex-row bg-login bg-cover">
         <div className="flex flex-col justify-center w-full lg:w-[40%] dark:bg-[#2b2b2b] bg-white items-center h-screen duration-300">
-          <div className="text-gray-700 dark:text-white text-[130%] gap-20 border-2 justify-start ml-[1rem] mt-[2rem] flex ">
+          <div className="text-gray-700 dark:text-white text-[130%] gap-20 mb-4 justify-start flex ">
             Recuperar senha
           </div>
           <div className="flex flex-col gap-3">
@@ -50,21 +36,19 @@ function ForgotPassword() {
               labelSel="E-mail:"
               //value={}
             />
-            <Input
-              name="senha"
-              typeSel={inputType}
-              placeholderSel="senha"
-              labelSel="Senha:"
-              classSel="w-full transition-all px-3 py-2 text-gray-700 bg-transparent flex outline-none"
-              maxLength={28}
-              iconSel={<HiKey className="text-gray-700" />}
-              iconpassSel={
-                <button type="button" onClick={Changetype}>
-                  <HiEye className="text-gray-700 " />{" "}
-                </button>
-              }
-              //value={}
-            />
+
+            <button
+              type="submit"
+              className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 ">
+              Enviar email
+            </button>
+            <a
+              onClick={() => {
+                history("/");
+              }}
+              className="text-gray-800 dark:text-gray-300 text-sm underline cursor-pointer duration-300">
+              Voltar ao login
+            </a>
           </div>
         </div>
       </div>
