@@ -1,16 +1,45 @@
 import React from "react";
-import { Routes as RoutesDOMRoute, Route } from "react-router-dom";
-import Login from "../Pages/Login/Login";
-import ForgotPassword from "../Pages/ForgotPassword";
-import ResetPassword from "../Pages/ResetPassword";
+import {
+  Routes as RoutesDOMRoute,
+  Route,
+  BrowserRouter,
+} from "react-router-dom";
+import Login from "../Pages/Auth/Login";
+import ForgotPassword from "../Pages/Auth/ForgotPassword";
+import ResetPassword from "../Pages/Auth/ResetPassword";
+import Layout from "../Pages/Auth/Layout";
+// import Layout from "../Pages/Auth/Layout";
 
 const Routes: React.FC = () => {
   return (
-    <RoutesDOMRoute>
-      <Route path="/" element={<Login />} />
-      <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/resetpassword" element={<ResetPassword />} />
-    </RoutesDOMRoute>
+    <BrowserRouter>
+      <RoutesDOMRoute>
+        <Route
+          path="/"
+          element={
+            <Layout>
+              <Login />
+            </Layout>
+          }
+        />
+        <Route
+          path="/forgotpassword"
+          element={
+            <Layout>
+              <ForgotPassword />
+            </Layout>
+          }
+        />
+        <Route
+          path="/resetpassword/:token?/:email?"
+          element={
+            <Layout>
+              <ResetPassword />
+            </Layout>
+          }
+        />
+      </RoutesDOMRoute>
+    </BrowserRouter>
   );
 };
 
