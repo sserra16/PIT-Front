@@ -23,7 +23,7 @@ function ForgotPassword() {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
   });
 
-  const handleSubmitCadastro = async (data: { email: string }) => {
+  const handleSubmitForgot = async (data: { email: string }) => {
     setLoaded(false);
 
     await api
@@ -42,6 +42,8 @@ function ForgotPassword() {
       .catch((error) => {
         setLoaded(true);
 
+        console.log(error);
+
         setAlert({
           open: true,
           description: error.response.data.msg,
@@ -58,7 +60,7 @@ function ForgotPassword() {
         className="w-full">
         <Form
           ref={CadastroFormRef}
-          onSubmit={handleSubmitCadastro}
+          onSubmit={handleSubmitForgot}
           className="flex flex-col items-center w-full">
           <div className="text-gray-700 dark:text-white text-[130%] mb-4 justify-start flex">
             Recuperar senha

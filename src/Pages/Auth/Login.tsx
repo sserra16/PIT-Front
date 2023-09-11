@@ -5,13 +5,16 @@ import { api } from "../../api/api.ts";
 import { HiKey, HiEye, HiUser } from "react-icons/hi";
 import { MdEmail } from "react-icons/md";
 import { Input } from "../../Components/Input.tsx";
-import { Tab } from "@headlessui/react";
+import { Dialog, Tab } from "@headlessui/react";
 import { motion } from "framer-motion";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { FaFacebookF, FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AlertType } from "../../types/index.ts";
+import { CircularProgress } from "@mui/material";
+import { useGoogleLogin, TokenResponse } from "@react-oauth/google";
+import axios from "axios";
 
 type dataLogin = {
   email: string;
@@ -28,6 +31,7 @@ const Login = () => {
   const LoginFormRef = useRef<FormHandles>(null);
   const [alert, setAlert] = useState<AlertType>();
   const [inputType, setInputType] = useState("password");
+  const [isOpen, setIsOpen] = useState(false);
 
   const history = useNavigate();
 
@@ -76,6 +80,32 @@ const Login = () => {
       });
   };
 
+  const handleGoogleLogin = async (response: TokenResponse) => {
+    const user = await axios.get(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: {
+          Authorization: `${response.token_type} ${response.access_token}`,
+        },
+      }
+    );
+
+    await api
+      .post("/cadastro", {
+        username: user.data.name,
+        email: user.data.email,
+        password: "",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleLogin,
+  });
+
   const handleSubmitLogin = async (data: dataLogin) => {
     if (data.email === "") {
       LoginFormRef.current?.setFieldError("email", "O email é obrigatório");
@@ -117,6 +147,19 @@ const Login = () => {
 
   return (
     <>
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        className="relative z-50">
+        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-sm rounded flex items-center p-10 justify-center bg-white">
+            <CircularProgress />
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+
       <Tab.Group>
         <Tab.List className="flex gap-1 w-full bg-gray-200 dark:bg-gray-700 p-1 shadow-sm rounded-md items-center duration-300">
           <Tab
@@ -199,30 +242,26 @@ const Login = () => {
                     Cadastrar
                   </button>
                 </div>
-              </motion.div>
-              <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
-                <div className="flex flex-col w-full items-center justify-center ">
-                  <a
-                    onClick={() => {
-                      history("/forgotpassword");
-                    }}
-                    className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
-                    Esqueceu sua senha?
-                  </a>
-                  <div className="flex space-x-4 ">
+                <div className="mt-7 h-[50px] py-10 flex items-center w-full rounded-md">
+                  <div className="flex flex-col w-full items-center justify-center ">
+                    <div className="flex space-x-4 w-full">
+                      <button
+                        type="button"
+                        onClick={() => loginWithGoogle()}
+                        className="!border-gray-300 !border-[1px] cursor-pointer !pointer-events-auto !w-full flex items-center justify-center bg-white p-3 !rounded-md !duration-300 !text-[#e44a2fc0] hover:!bg-gray-300">
+                        <FaGoogle size={18} />
+                      </button>
+                    </div>
                     <a
-                      href="http://127.0.0.1:3333/google/redirect"
-                      className="border-gray-600 border-[1px] p-3 rounded-full duration-300 text-[#e44a2fc0] hover:bg-[#e44a2fc0] hover:text-white">
-                      <FaGoogle size={18} />
-                    </a>
-                    <a
-                      href=""
-                      className="border-gray-600 border-[1px] p-3 rounded-full duration-300 text-[#2f52b3] hover:bg-[#2f52b3] hover:text-white">
-                      <FaFacebookF size={18} />
+                      onClick={() => {
+                        history("/forgotpassword");
+                      }}
+                      className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
+                      Esqueceu sua senha?
                     </a>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </Form>
           </Tab.Panel>
           <Tab.Panel className="rounded mmd:p-1 w-full">
@@ -283,14 +322,6 @@ const Login = () => {
                   <div className="flex space-x-4 ">
                     <a
                       href=""
-                      onClick={async (e) => {
-                        e.preventDefault();
-
-                        await api
-                          .get("/google/redirect")
-                          .then((res) => console.log(res))
-                          .catch((err) => console.error(err));
-                      }}
                       className="border-gray-600 border-[1px] p-3 rounded-full duration-300 text-[#e44a2fc0] hover:bg-[#e44a2fc0] hover:text-white">
                       <FaGoogle size={18} />
                     </a>

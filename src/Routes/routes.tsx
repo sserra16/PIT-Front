@@ -8,6 +8,7 @@ import Login from "../Pages/Auth/Login";
 import ForgotPassword from "../Pages/Auth/ForgotPassword";
 import ResetPassword from "../Pages/Auth/ResetPassword";
 import Layout from "../Pages/Auth/Layout";
+import Home from "../Pages/Home";
 // import Layout from "../Pages/Auth/Layout";
 
 const Routes: React.FC = () => {
@@ -38,6 +39,7 @@ const Routes: React.FC = () => {
             </Layout>
           }
         />
+        <Route path="/home" element={<Home />} />
       </RoutesDOMRoute>
     </BrowserRouter>
   );
