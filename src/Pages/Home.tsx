@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import user from "../assets/user-solid.svg";
 import { FormHandles } from "@unform/core";
 import trash from "../assets/trash-solid.svg";
@@ -7,48 +7,69 @@ import { api } from "../api/api";
 import { Dialog } from "@headlessui/react";
 import { Form } from "@unform/web";
 import { Input } from "../Components/Input";
+import File from "../Components/File";
 import Radio from "../Components/Radio";
 import { AnimatePresence, motion } from "framer-motion";
 import { BsInfoLg } from "react-icons/bs";
 import { Textarea } from "../Components/textarea";
+import { useNavigate } from "react-router-dom";
 // import { useDark } from "../Hooks/dark";
 // import { FiSun } from "react-icons/fi";
 // import { HiOutlineMoon } from "react-icons/hi";
 
 export default function Home() {
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const token = JSON.parse(localStorage.getItem("user_token")!);
-
-    api
-      .get("authenticate", {
-        headers: {
-          Authorization: `${token.type} ${token.token}`,
-        },
-      })
-      .then((res) => {
-        setUsuario(res.data.user);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    buscarEventos();
-  }, []);
-
-  const [eventos, setEventos] = useState([]);
+  const history = useNavigate();
   const [usuario, setUsuario] = useState<any>({});
 
-  // const { isDark, setDark, setLight } = useDark();
+  const buscarUsuario = useCallback(
+    (image = false) => {
+      const tokenLocal = localStorage.getItem("user_token");
+      let token: any;
 
-  function buscarEventos() {
+      if (!tokenLocal) {
+        history("/erro");
+        return;
+      } else {
+        token = JSON.parse(tokenLocal);
+      }
+
+      api
+        .get("authenticate", {
+          headers: {
+            Authorization: `${token.type} ${token.token}`,
+          },
+        })
+        .then((res) => {
+          setUsuario(res.data.user);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      if (image) {
+        api.get(`/getimage/${usuario.id}`).then;
+      }
+    },
+    [history, usuario.id]
+  );
+
+  const buscarEventos = useCallback(() => {
     api
       .get("/eventos")
       .then((res) => {
         setEventos(res.data);
       })
       .catch((e) => console.error(e));
-  }
+  }, []);
+
+  useEffect(() => {
+    buscarUsuario(false);
+    buscarEventos();
+  }, [buscarUsuario, buscarEventos]);
+
+  const [eventos, setEventos] = useState([]);
+
+  // const { isDark, setDark, setLight } = useDark();
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEx, setIsOpenEx] = useState(false);
@@ -90,8 +111,36 @@ export default function Home() {
     buscarEventos();
   }
 
-  function handleEditPerfil(data: any) {
-    /* AHAHHAHAHAHHAHA */
+  async function handleEditPerfil(data: any) {
+    if (data.imagem) {
+      const imageData = new FormData();
+      imageData.append("imagem", data.imagem);
+      imageData.append("id", usuario.id);
+
+      await api
+        .post("/insereimagem", imageData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    await api
+      .post("/edituser", {
+        id: usuario.id,
+        username: data.nomeusuario,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    setIsOpenPerfil(false);
+    buscarUsuario(true);
   }
   function handleEditEvent(data: any) {
     /* AHAHHAHAHAHHAHA */
@@ -127,8 +176,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpen(false)}
-            className="relative z-50"
-          >
+            className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -139,8 +187,7 @@ export default function Home() {
                 <Form
                   ref={formRef}
                   onSubmit={handleCreateEvent}
-                  className="flex flex-col gap-5"
-                >
+                  className="flex flex-col gap-5">
                   <Input
                     name="descricao"
                     typeSel="text"
@@ -164,29 +211,21 @@ export default function Home() {
                     placeholderSel="Quantidade de pessoas "
                     classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
                   />
-                  <div
-                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center cursor-pointer mb-2`}
-                  >
-                    <label
-                      htmlFor="arquivo"
-                      className="text-md flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
-                    >
-                      Inserir imagem do evento
-                    </label>
-                    <input type="file" className="hidden" id="arquivo" />
-                  </div>
+                  <File
+                    descricao="Inserir imagem"
+                    classSel="w-full h-36"
+                    name="imagemevento"
+                  />
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setIsOpen(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                    >
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
-                    >
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
                       Cadastrar
                     </button>
                   </div>
@@ -208,8 +247,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpenEdit(false)}
-            className="relative z-50"
-          >
+            className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -220,8 +258,7 @@ export default function Home() {
                 <Form
                   ref={formRef4}
                   onSubmit={handleEditEvent}
-                  className="flex flex-col gap-5"
-                >
+                  className="flex flex-col gap-5">
                   <Input
                     name="descricao"
                     typeSel="text"
@@ -245,29 +282,21 @@ export default function Home() {
                     placeholderSel="Quantidade de pessoas "
                     classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
                   />
-                  <div
-                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center cursor-pointer mb-2`}
-                  >
-                    <label
-                      htmlFor="arquivo"
-                      className="text-md flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
-                    >
-                      Editar imagem do evento
-                    </label>
-                    <input type="file" className="hidden" id="arquivo" />
-                  </div>
+                  <File
+                    descricao="Editar imagem"
+                    classSel="w-full h-36"
+                    name="imagemevento"
+                  />
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setIsOpenEdit(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                    >
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
-                    >
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
                       Editar
                     </button>
                   </div>
@@ -289,8 +318,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpenEx(false)}
-            className="relative z-50"
-          >
+            className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -302,15 +330,13 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setIsOpenEx(false)}
-                    className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                  >
+                    className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
                     Cancelar
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDestroyEvent(idAtual)}
-                    className="bg-[#D73838] py-2 w-full px-6 text-white rounded-lg hover:bg-[#a92b2b] transition-all"
-                  >
+                    className="bg-[#D73838] py-2 w-full px-6 text-white rounded-lg hover:bg-[#a92b2b] transition-all">
                     Excluir
                   </button>
                 </div>
@@ -331,56 +357,42 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpenPerfil(false)}
-            className="relative z-50"
-          >
+            className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <Dialog.Panel className="w-full max-w-sm rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
+              <Dialog.Panel className="w-full max-w-xl rounded-xl flex flex-col gap-5 items-center p-3 sm:p-20 justify-center bg-white">
                 <h1 className="opacity-40 text-black font-semibold text-xl">
                   Editar Perfil
                 </h1>
                 <Form
                   ref={formRef3}
                   onSubmit={handleEditPerfil}
-                  className="flex flex-col items-center gap-5"
-                >
-                  <div
-                    className={`border-dashed !textdarkselect rounded-[100%] border-2 borderdark4 flex w-[8rem] h-[8rem] items-center    justify-center  cursor-pointer mb-2`}
-                  >
-                    <label
-                      htmlFor="arquivo"
-                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
-                    >
-                      Nova foto
-                    </label>
-                    <input type="file" className="hidden" id="arquivo" />
-                  </div>
+                  className="flex flex-col items-center gap-5 w-full">
+                  <File
+                    descricao="Nova foto"
+                    name="imagem"
+                    classSel="rounded-[100%] w-[8rem] h-[8rem]"
+                  />
                   <Input
                     name="nomeusuario"
                     typeSel="text"
                     placeholderSel="Novo nome de usuário"
                     classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
-                  />
-                  <Input
-                    name="emailusuario"
-                    typeSel="text"
-                    placeholderSel="Novo Email de usuário"
-                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                    valueSel={usuario.username}
+                    className="w-full"
                   />
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setIsOpenPerfil(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                    >
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
-                    >
-                      Cadastrar
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+                      Salvar
                     </button>
                   </div>
                 </Form>
@@ -401,8 +413,7 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setisOpenInfo(false)}
-            className="relative z-50"
-          >
+            className="relative z-50">
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -413,18 +424,20 @@ export default function Home() {
                 <Form
                   ref={formRef5}
                   onSubmit={handleInfoPerfil}
-                  className="flex flex-col gap-5"
-                >
+                  className="flex flex-col gap-5">
                   <div
-                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}
-                  >
+                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}>
                     <label
                       htmlFor="arquivo"
-                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
-                    >
+                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer">
                       Foto do evento
                     </label>
-                    <input type="file" className="hidden" id="arquivo" />
+                    <Input
+                      name="imagem"
+                      type="file"
+                      className="hidden"
+                      id="arquivo"
+                    />
                   </div>
                   <div className="flex w-full border border-solid">
                     <Input
@@ -443,18 +456,17 @@ export default function Home() {
                     />
                   </div>
                   <Textarea
-                      name="descricao"
-                      typeSel="textarea"
-                      placeholderSel="descricao aqui"
-                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
-                      label="Descricão:"
-                    />
+                    name="descricao"
+                    typeSel="textarea"
+                    placeholderSel="descricao aqui"
+                    classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
+                    label="Descricão:"
+                  />
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setisOpenInfo(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                    >
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
                       Fechar
                     </button>
                   </div>
@@ -478,8 +490,7 @@ export default function Home() {
             onClick={() => {
               setIsOpenPerfil(true);
             }}
-            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer"
-          >
+            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer">
             <img src={user} alt="" />
           </div>
           <h1>
@@ -493,8 +504,7 @@ export default function Home() {
             </h1>
             <button
               onClick={() => setIsOpen(true)}
-              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
-            >
+              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
               Criar novo
             </button>
           </div>
@@ -524,16 +534,14 @@ export default function Home() {
                 return (
                   <tr
                     key={index}
-                    className="border-b border-[#000] border-opacity-25 text-black text-opacity-80"
-                  >
+                    className="border-b border-[#000] border-opacity-25 text-black text-opacity-80">
                     <td className="flex gap-1 mt-3">
                       <button
                         onClick={() => {
                           setIdAtual(item.id);
                           setIsOpenEdit(true);
                         }}
-                        className="bg-[#3c75cc] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#284eb6] transition-all"
-                      >
+                        className="bg-[#3c75cc] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#284eb6] transition-all">
                         <img src={pen} width={10} alt="" />
                       </button>
                       <button
@@ -541,8 +549,7 @@ export default function Home() {
                           setIdAtual(item.id);
                           setIsOpenEx(true);
                         }}
-                        className="bg-[#D73838] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#a92b2b] transition-all"
-                      >
+                        className="bg-[#D73838] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#a92b2b] transition-all">
                         <img src={trash} width={10} alt="" />
                       </button>
                       <button
@@ -550,8 +557,7 @@ export default function Home() {
                           setIdAtual(item.id);
                           setisOpenInfo(true);
                         }}
-                        className="bg-[#eacb22] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#D9BC1F] transition-all"
-                      >
+                        className="bg-[#eacb22] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#D9BC1F] transition-all">
                         <BsInfoLg className="!text-white" />
                       </button>
                     </td>

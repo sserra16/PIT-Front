@@ -9,6 +9,7 @@ interface IInput extends React.HTMLProps<HTMLDivElement> {
   iconSel?: React.ReactNode;
   iconpassSel?: React.ReactNode;
   typeSel?: string;
+  valueSel?: string;
 }
 
 export const Input = ({
@@ -19,6 +20,7 @@ export const Input = ({
   name,
   iconpassSel,
   typeSel,
+  valueSel,
   ...rest
 }: IInput) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,19 +44,16 @@ export const Input = ({
 
   return (
     <div {...rest}>
-      <div>
-        <label
-          htmlFor={name}
-          className={`!mb-0 ${
-            error ? "text-red-400" : "text-gray-700 dark:text-gray-300"
-          } duration-300`}>
-          {error ? error : labelSel}
-        </label>
-      </div>
+      <label
+        htmlFor={name}
+        className={`!mb-0 ${
+          error ? "text-red-400" : "text-gray-700 dark:text-gray-300"
+        } duration-300`}>
+        {error ? error : labelSel}
+      </label>
       <div className="relative">
         {iconSel}
         <input
-          id={name}
           name={name}
           ref={inputRef}
           className={` ${classSel} !pl-8 !mt-0 ${
@@ -64,6 +63,7 @@ export const Input = ({
           } transition-all placeholder:text-gray-400 dark:placeholder:text-gray-400 flex w-full items-center px-2 justify-between duration-300 rounded-md mx-auto my-3`}
           placeholder={placeholderSel}
           type={typeSel}
+          defaultValue={valueSel ? valueSel : ""}
         />
         {iconpassSel}
       </div>

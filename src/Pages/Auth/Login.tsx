@@ -95,8 +95,6 @@ const Login = () => {
         email: user.data.email,
       })
       .then((res) => {
-        console.log(res);
-
         setAlert({
           description: "Usuário logado!",
           open: true,
