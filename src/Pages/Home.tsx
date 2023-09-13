@@ -9,6 +9,8 @@ import { Form } from "@unform/web";
 import { Input } from "../Components/Input";
 import Radio from "../Components/Radio";
 import { AnimatePresence, motion } from "framer-motion";
+import { BsInfoLg } from "react-icons/bs";
+import { Textarea } from "../Components/textarea";
 // import { useDark } from "../Hooks/dark";
 // import { FiSun } from "react-icons/fi";
 // import { HiOutlineMoon } from "react-icons/hi";
@@ -50,8 +52,14 @@ export default function Home() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEx, setIsOpenEx] = useState(false);
+  const [isOpenEdit, setIsOpenEdit] = useState(false);
+  const [isOpenPerfil, setIsOpenPerfil] = useState(false);
+  const [isOpenInfo, setisOpenInfo] = useState(false);
   const [idAtual, setIdAtual] = useState<number>(0);
   const formRef = useRef<FormHandles>(null);
+  const formRef3 = useRef<FormHandles>(null);
+  const formRef4 = useRef<FormHandles>(null);
+  const formRef5 = useRef<FormHandles>(null);
 
   function handleCreateEvent(data: any) {
     if (data.descricao === "") {
@@ -82,6 +90,16 @@ export default function Home() {
     buscarEventos();
   }
 
+  function handleEditPerfil(data: any) {
+    /* AHAHHAHAHAHHAHA */
+  }
+  function handleEditEvent(data: any) {
+    /* AHAHHAHAHAHHAHA */
+  }
+  function handleInfoPerfil(data: any) {
+    /* AHAHHAHAHAHHAHA */
+  }
+
   function handleDestroyEvent(id: number) {
     api
       .post("destroyevent", { id })
@@ -109,7 +127,8 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpen(false)}
-            className="relative z-50">
+            className="relative z-50"
+          >
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -120,7 +139,8 @@ export default function Home() {
                 <Form
                   ref={formRef}
                   onSubmit={handleCreateEvent}
-                  className="flex flex-col gap-5">
+                  className="flex flex-col gap-5"
+                >
                   <Input
                     name="descricao"
                     typeSel="text"
@@ -141,20 +161,114 @@ export default function Home() {
                   <Input
                     name="quantidade"
                     typeSel="number"
-                    placeholderSel="Quantidade"
+                    placeholderSel="Quantidade de pessoas "
                     classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
                   />
+                  <div
+                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center cursor-pointer mb-2`}
+                  >
+                    <label
+                      htmlFor="arquivo"
+                      className="text-md flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                    >
+                      Inserir imagem do evento
+                    </label>
+                    <input type="file" className="hidden" id="arquivo" />
+                  </div>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setIsOpen(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                    >
                       Cancelar
                     </button>
                     <button
                       type="submit"
-                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
+                    >
                       Cadastrar
+                    </button>
+                  </div>
+                </Form>
+              </Dialog.Panel>
+            </div>
+          </Dialog>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Editar */}
+      <AnimatePresence>
+        {isOpenEdit && (
+          <Dialog
+            open={isOpenEdit}
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
+            onClose={() => setIsOpenEdit(false)}
+            className="relative z-50"
+          >
+            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+            <div className="fixed inset-0 flex items-center justify-center p-4">
+              <Dialog.Panel className="w-full max-w-sm rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
+                <h1 className="opacity-40 text-black font-semibold text-xl">
+                  Editar
+                </h1>
+                <Form
+                  ref={formRef4}
+                  onSubmit={handleEditEvent}
+                  className="flex flex-col gap-5"
+                >
+                  <Input
+                    name="descricao"
+                    typeSel="text"
+                    placeholderSel="Descrição"
+                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                  />
+                  <div className="flex items-start flex-col gap-2">
+                    <h1 className="opacity-60 text-black font-semibold text-lg">
+                      Visibilidade
+                    </h1>
+
+                    <Radio
+                      name="visibilidade"
+                      options={options as any}
+                      defaultChecked
+                    />
+                  </div>
+                  <Input
+                    name="quantidade"
+                    typeSel="number"
+                    placeholderSel="Quantidade de pessoas "
+                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                  />
+                  <div
+                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center cursor-pointer mb-2`}
+                  >
+                    <label
+                      htmlFor="arquivo"
+                      className="text-md flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                    >
+                      Editar imagem do evento
+                    </label>
+                    <input type="file" className="hidden" id="arquivo" />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsOpenEdit(false)}
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
+                    >
+                      Editar
                     </button>
                   </div>
                 </Form>
@@ -175,7 +289,8 @@ export default function Home() {
             exit={{ opacity: 0 }}
             transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
             onClose={() => setIsOpenEx(false)}
-            className="relative z-50">
+            className="relative z-50"
+          >
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
@@ -187,16 +302,163 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => setIsOpenEx(false)}
-                    className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
+                    className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                  >
                     Cancelar
                   </button>
                   <button
                     type="button"
                     onClick={() => handleDestroyEvent(idAtual)}
-                    className="bg-[#D73838] py-2 w-full px-6 text-white rounded-lg hover:bg-[#a92b2b] transition-all">
+                    className="bg-[#D73838] py-2 w-full px-6 text-white rounded-lg hover:bg-[#a92b2b] transition-all"
+                  >
                     Excluir
                   </button>
                 </div>
+              </Dialog.Panel>
+            </div>
+          </Dialog>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Editar usuario */}
+      <AnimatePresence>
+        {isOpenPerfil && (
+          <Dialog
+            open={isOpenPerfil}
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
+            onClose={() => setIsOpenPerfil(false)}
+            className="relative z-50"
+          >
+            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+            <div className="fixed inset-0 flex items-center justify-center p-4">
+              <Dialog.Panel className="w-full max-w-sm rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
+                <h1 className="opacity-40 text-black font-semibold text-xl">
+                  Editar Perfil
+                </h1>
+                <Form
+                  ref={formRef3}
+                  onSubmit={handleEditPerfil}
+                  className="flex flex-col items-center gap-5"
+                >
+                  <div
+                    className={`border-dashed !textdarkselect rounded-[100%] border-2 borderdark4 flex w-[8rem] h-[8rem] items-center    justify-center  cursor-pointer mb-2`}
+                  >
+                    <label
+                      htmlFor="arquivo"
+                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                    >
+                      Nova foto
+                    </label>
+                    <input type="file" className="hidden" id="arquivo" />
+                  </div>
+                  <Input
+                    name="nomeusuario"
+                    typeSel="text"
+                    placeholderSel="Novo nome de usuário"
+                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                  />
+                  <Input
+                    name="emailusuario"
+                    typeSel="text"
+                    placeholderSel="Novo Email de usuário"
+                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsOpenPerfil(false)}
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      type="submit"
+                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
+                    >
+                      Cadastrar
+                    </button>
+                  </div>
+                </Form>
+              </Dialog.Panel>
+            </div>
+          </Dialog>
+        )}
+      </AnimatePresence>
+
+      {/* Modal Info usuario */}
+      <AnimatePresence>
+        {isOpenInfo && (
+          <Dialog
+            open={isOpenInfo}
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ bounce: false, ease: "easeInOut", duration: 0.2 }}
+            onClose={() => setisOpenInfo(false)}
+            className="relative z-50"
+          >
+            <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
+
+            <div className="fixed inset-0 flex items-center justify-center p-4">
+              <Dialog.Panel className="w-full max-w-sm rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
+                <h1 className="opacity-40 text-black font-semibold text-xl">
+                  Visualizar informações
+                </h1>
+                <Form
+                  ref={formRef5}
+                  onSubmit={handleInfoPerfil}
+                  className="flex flex-col gap-5"
+                >
+                  <div
+                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}
+                  >
+                    <label
+                      htmlFor="arquivo"
+                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                    >
+                      Foto do evento
+                    </label>
+                    <input type="file" className="hidden" id="arquivo" />
+                  </div>
+                  <div className="flex w-full border border-solid">
+                    <Input
+                      name="id"
+                      typeSel="text"
+                      placeholderSel="id aqui"
+                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[25%]"
+                      label="Id:"
+                    />
+                    <Input
+                      name="visibilidade"
+                      typeSel="text"
+                      placeholderSel="visibilidade aqui"
+                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
+                      label="Visibilidade:"
+                    />
+                  </div>
+                  <Textarea
+                      name="descricao"
+                      typeSel="textarea"
+                      placeholderSel="descricao aqui"
+                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
+                      label="Descricão:"
+                    />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setisOpenInfo(false)}
+                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                    >
+                      Fechar
+                    </button>
+                  </div>
+                </Form>
               </Dialog.Panel>
             </div>
           </Dialog>
@@ -212,7 +474,12 @@ export default function Home() {
               <HiOutlineMoon onClick={setLight} className="cursor-pointer" />
             )}
           </div> */}
-          <div className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer">
+          <div
+            onClick={() => {
+              setIsOpenPerfil(true);
+            }}
+            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer"
+          >
             <img src={user} alt="" />
           </div>
           <h1>
@@ -226,7 +493,8 @@ export default function Home() {
             </h1>
             <button
               onClick={() => setIsOpen(true)}
-              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all"
+            >
               Criar novo
             </button>
           </div>
@@ -256,9 +524,16 @@ export default function Home() {
                 return (
                   <tr
                     key={index}
-                    className="border-b border-[#000] border-opacity-25 text-black text-opacity-80">
-                    <td className="flex gap-3 mt-3">
-                      <button className="bg-[#3c75cc] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#284eb6] transition-all">
+                    className="border-b border-[#000] border-opacity-25 text-black text-opacity-80"
+                  >
+                    <td className="flex gap-1 mt-3">
+                      <button
+                        onClick={() => {
+                          setIdAtual(item.id);
+                          setIsOpenEdit(true);
+                        }}
+                        className="bg-[#3c75cc] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#284eb6] transition-all"
+                      >
                         <img src={pen} width={10} alt="" />
                       </button>
                       <button
@@ -266,8 +541,18 @@ export default function Home() {
                           setIdAtual(item.id);
                           setIsOpenEx(true);
                         }}
-                        className="bg-[#D73838] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#a92b2b] transition-all">
+                        className="bg-[#D73838] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#a92b2b] transition-all"
+                      >
                         <img src={trash} width={10} alt="" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIdAtual(item.id);
+                          setisOpenInfo(true);
+                        }}
+                        className="bg-[#eacb22] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#D9BC1F] transition-all"
+                      >
+                        <BsInfoLg className="!text-white" />
                       </button>
                     </td>
                     <td className="px-6 py-4">{item.id}</td>
