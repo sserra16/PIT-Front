@@ -10,14 +10,17 @@ import ResetPassword from "../Pages/Auth/ResetPassword";
 import Layout from "../Pages/Auth/Layout";
 import Home from "../Pages/Home";
 import NotAuthenticaded from "../Pages/NotAuthenticaded";
+import Landing from "../Pages/Landing";
 // import Layout from "../Pages/Auth/Layout";
 
 const Routes: React.FC = () => {
   return (
     <BrowserRouter>
       <RoutesDOMRoute>
+        <Route path="/" element={<Landing />} />
+
         <Route
-          path="/"
+          path="/login"
           element={
             <Layout>
               <Login />

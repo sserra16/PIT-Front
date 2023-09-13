@@ -10,6 +10,7 @@ interface IInput extends React.HTMLProps<HTMLDivElement> {
   iconpassSel?: React.ReactNode;
   typeSel?: string;
   valueSel?: string;
+  readonlySel?: boolean;
 }
 
 export const Input = ({
@@ -21,6 +22,7 @@ export const Input = ({
   iconpassSel,
   typeSel,
   valueSel,
+  readonlySel,
   ...rest
 }: IInput) => {
   const inputRef = useRef<HTMLInputElement>(null);
