@@ -18,7 +18,7 @@ import { Textarea } from "../Components/textarea";
 export default function Home() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    /* const token = JSON.parse(localStorage.getItem("user_token")!);
+    const token = JSON.parse(localStorage.getItem("user_token")!);
 
     api
       .get("authenticate", {
@@ -27,17 +27,17 @@ export default function Home() {
         },
       })
       .then((res) => {
-        setUsuario(res.data.user)
+        setUsuario(res.data.user);
       })
       .catch((error) => {
         console.error(error);
-      }); */
+      });
 
     buscarEventos();
   }, []);
 
   const [eventos, setEventos] = useState([]);
-  // const [usuario, setUsuario] = useState<any>({});
+  const [usuario, setUsuario] = useState<any>({});
 
   // const { isDark, setDark, setLight } = useDark();
 
@@ -484,7 +484,7 @@ export default function Home() {
             <img src={user} alt="" />
           </div>
           <h1>
-            Olá <strong>{/* {usuario.username} */}TESTE!</strong>
+            Olá <strong>{usuario.username}!</strong>
           </h1>
         </div>
         <div className="rounded-xl bg-[#D0D0D0] p-6 overflow-x-scroll scrollbar-track-[#3c75cc] scrollbar-thumb-white scrollbar-thin">

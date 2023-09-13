@@ -9,7 +9,7 @@ import { Dialog, Tab } from "@headlessui/react";
 import { motion } from "framer-motion";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { FaFacebookF, FaGoogle } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { AlertType } from "../../types/index.ts";
 import { CircularProgress } from "@mui/material";
@@ -90,23 +90,33 @@ const Login = () => {
     );
 
     await api
-      .post("/cadastro", {
+      .post("/logingoogle", {
         username: user.data.name,
         email: user.data.email,
-        password: "",
       })
-      .then(async (res) => {
+      .then((res) => {
+        console.log(res);
+
         setAlert({
           description: "Usuário logado!",
           open: true,
           type: "success",
         });
 
+        localStorage.setItem("user_token", JSON.stringify(res.data.token));
+
         setTimeout(() => {
           history("/home");
         }, 2000);
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        setAlert({
+          open: true,
+          description: error.response.data.msg,
+          type: "error",
+        });
+      });
   };
 
   const loginWithGoogle = useGoogleLogin({
@@ -341,18 +351,6 @@ const Login = () => {
                   </div>
                 </div>
               </motion.div>
-
-              <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
-                <div className="flex flex-col w-full items-center  justify-center ">
-                  <a
-                    onClick={() => {
-                      history("/forgotpassword");
-                    }}
-                    className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
-                    Esqueceu sua senha?
-                  </a>
-                </div>
-              </div>
             </Form>
           </Tab.Panel>
         </Tab.Panels>
