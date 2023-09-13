@@ -415,49 +415,50 @@ export default function Home() {
                   onSubmit={handleInfoPerfil}
                   className="flex flex-col gap-5"
                 >
-                  <div
-                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}
-                  >
-                    <label
-                      htmlFor="arquivo"
-                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                  <>
+                    <div
+                      className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}
                     >
-                      Foto do evento
-                    </label>
-                    <input type="file" className="hidden" id="arquivo" />
-                  </div>
-                  <div className="flex w-full border border-solid">
-                    <Input
-                      name="id"
-                      typeSel="text"
-                      placeholderSel="id aqui"
-                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[25%]"
-                      label="Id:"
-                    />
-                    <Input
-                      name="visibilidade"
-                      typeSel="text"
-                      placeholderSel="visibilidade aqui"
-                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
-                      label="Visibilidade:"
-                    />
-                  </div>
-                  <Textarea
+                      <label
+                        htmlFor="arquivo"
+                        className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer"
+                      >
+                        Foto do evento
+                      </label>
+                      <input type="file" className="hidden" id="arquivo" />
+                    </div>
+                    <div className="flex gap-10 w-full">
+                      <Input
+                        name="id"
+                        typeSel="text"
+                        classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[1rem]"
+                        labelSel="Id:"
+                        value={"3"}
+                      />
+                      <Input
+                        name="visibilidade"
+                        typeSel="text"
+                        classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
+                        labelSel="Visibilidade:"
+                      />
+                    </div>
+                    <Textarea
                       name="descricao"
                       typeSel="textarea"
                       placeholderSel="descricao aqui"
                       classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
-                      label="Descricão:"
+                      labelSel="Descricão:"
                     />
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setisOpenInfo(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
-                    >
-                      Fechar
-                    </button>
-                  </div>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setisOpenInfo(false)}
+                        className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all"
+                      >
+                        Fechar
+                      </button>
+                    </div>
+                  </>
                 </Form>
               </Dialog.Panel>
             </div>
