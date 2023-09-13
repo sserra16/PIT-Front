@@ -13,6 +13,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BsInfoLg } from "react-icons/bs";
 import { Textarea } from "../Components/textarea";
 import { useNavigate } from "react-router-dom";
+import { BsFillGearFill } from "react-icons/bs";
 // import { useDark } from "../Hooks/dark";
 // import { FiSun } from "react-icons/fi";
 // import { HiOutlineMoon } from "react-icons/hi";
@@ -20,6 +21,8 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   const history = useNavigate();
   const [usuario, setUsuario] = useState<any>({});
+  const [image, setImages] = useState("");
+  const [eventos, setEventos] = useState([]);
 
   const buscarUsuario = useCallback(
     (image = false) => {
@@ -47,7 +50,17 @@ export default function Home() {
         });
 
       if (image) {
-        api.get(`/getimage/${usuario.id}`).then;
+        api
+          .get(`/getimage/${usuario.id}`)
+          .then((res) => {
+            // const blob = new Blob([res.data], { type: "image/jpeg" });
+            // const imageURL = URL.createObjectURL(blob);
+
+            // setImages(imageURL);
+
+            console.log(res);
+          })
+          .catch((error) => console.error(error));
       }
     },
     [history, usuario.id]
@@ -66,8 +79,6 @@ export default function Home() {
     buscarUsuario(false);
     buscarEventos();
   }, [buscarUsuario, buscarEventos]);
-
-  const [eventos, setEventos] = useState([]);
 
   // const { isDark, setDark, setLight } = useDark();
 
@@ -112,6 +123,8 @@ export default function Home() {
   }
 
   async function handleEditPerfil(data: any) {
+    let image = false;
+
     if (data.imagem) {
       const imageData = new FormData();
       imageData.append("imagem", data.imagem);
@@ -125,6 +138,8 @@ export default function Home() {
         .catch((error) => {
           console.error(error);
         });
+
+      image = true;
     }
 
     await api
@@ -140,10 +155,21 @@ export default function Home() {
       });
 
     setIsOpenPerfil(false);
-    buscarUsuario(true);
+    buscarUsuario(image);
   }
-  function handleEditEvent(data: any) {
-    /* AHAHHAHAHAHHAHA */
+  async function handleEditEvent(data: any) {
+    await api
+      .post("/editevento", {
+        id: idAtual,
+        descricao: data.descricao,
+        quantidade: data.quantidade,
+        visibilidade: data.visibilidade,
+      })
+      .then((res) => console.log(res))
+      .catch((error) => console.error(error));
+
+    setIsOpenEdit(false);
+    buscarEventos();
   }
   function handleInfoPerfil(data: any) {
     /* AHAHHAHAHAHHAHA */
@@ -425,42 +451,38 @@ export default function Home() {
                   ref={formRef5}
                   onSubmit={handleInfoPerfil}
                   className="flex flex-col gap-5">
-                  <div
-                    className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}>
-                    <label
-                      htmlFor="arquivo"
-                      className="text-md mmd:text-xl flex justify-center text-gray-400 hover:!text-gray-500 p-3 mmd:p-1 items-center w-full cursor-pointer">
-                      Foto do evento
-                    </label>
-                    <Input
-                      name="imagem"
-                      type="file"
-                      className="hidden"
-                      id="arquivo"
-                    />
-                  </div>
-                  <div className="flex w-full border border-solid">
-                    <Input
-                      name="id"
-                      typeSel="text"
-                      placeholderSel="id aqui"
-                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[25%]"
-                      label="Id:"
-                    />
-                    <Input
-                      name="visibilidade"
-                      typeSel="text"
-                      placeholderSel="visibilidade aqui"
-                      classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
-                      label="Visibilidade:"
-                    />
-                  </div>
+                  <Input
+                    name="id"
+                    typeSel="text"
+                    placeholderSel="id aqui"
+                    classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[25%]"
+                    labelSel="Id:"
+                    disabled
+                    valueSel={JSON.parse(JSON.stringify(eventos[idAtual])).id}
+                  />
+                  <Input
+                    name="visibilidade"
+                    typeSel="text"
+                    placeholderSel="visibilidade aqui"
+                    classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
+                    labelSel="Visibilidade:"
+                    disabled
+                    valueSel={
+                      JSON.parse(JSON.stringify(eventos[idAtual]))
+                        .visibilidade == 1
+                        ? "Público"
+                        : "Privado"
+                    }
+                  />
                   <Textarea
                     name="descricao"
-                    typeSel="textarea"
                     placeholderSel="descricao aqui"
                     classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
-                    label="Descricão:"
+                    valueSel={
+                      JSON.parse(JSON.stringify(eventos[idAtual])).descricao
+                    }
+                    labelSel="Descricão:"
+                    disabled
                   />
                   <div className="flex gap-2">
                     <button
@@ -478,6 +500,7 @@ export default function Home() {
       </AnimatePresence>
 
       <div className="bg-gray-200 flex flex-col gap-5 w-100 h-screen px-36 py-6">
+        <img src={image} alt="" width={30} />
         <div className="flex gap-4 items-center h-14">
           {/* <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] flex items-center">
             {isDark ? (
@@ -490,8 +513,8 @@ export default function Home() {
             onClick={() => {
               setIsOpenPerfil(true);
             }}
-            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer">
-            <img src={user} alt="" />
+            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer flex items-center justify-center">
+            <BsFillGearFill />
           </div>
           <h1>
             Olá <strong>{usuario.username}!</strong>
@@ -554,7 +577,7 @@ export default function Home() {
                       </button>
                       <button
                         onClick={() => {
-                          setIdAtual(item.id);
+                          setIdAtual(index);
                           setisOpenInfo(true);
                         }}
                         className="bg-[#eacb22] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#D9BC1F] transition-all">

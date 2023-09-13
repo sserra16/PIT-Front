@@ -8,7 +8,8 @@ interface Textarea extends React.HTMLProps<HTMLDivElement> {
   placeholderSel?: string;
   iconSel?: React.ReactNode;
   iconpassSel?: React.ReactNode;
-  typeSel?: string;
+  disabled?: boolean;
+  valueSel?: any;
 }
 
 export const Textarea = ({
@@ -18,6 +19,8 @@ export const Textarea = ({
   labelSel,
   name,
   iconpassSel,
+  valueSel,
+  disabled = false,
   ...rest
 }: Textarea) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +58,8 @@ export const Textarea = ({
         <textarea
           id={name}
           name={name}
-          
+          disabled={disabled}
+          defaultValue={valueSel ? valueSel : ''}
           className={` ${classSel} !pl-8 !mt-0 ${
             error
               ? " border border-red-500 dark:border-red-500"

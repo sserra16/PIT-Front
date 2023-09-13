@@ -11,6 +11,7 @@ interface IInput extends React.HTMLProps<HTMLDivElement> {
   typeSel?: string;
   valueSel?: string;
   readonlySel?: boolean;
+  disabled?: boolean;
 }
 
 export const Input = ({
@@ -23,6 +24,7 @@ export const Input = ({
   typeSel,
   valueSel,
   readonlySel,
+  disabled = false,
   ...rest
 }: IInput) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,6 +60,7 @@ export const Input = ({
         <input
           name={name}
           ref={inputRef}
+          disabled={disabled}
           className={` ${classSel} !pl-8 !mt-0 ${
             error
               ? " border border-red-500 dark:border-red-500"
