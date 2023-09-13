@@ -415,7 +415,6 @@ export default function Home() {
                   onSubmit={handleInfoPerfil}
                   className="flex flex-col gap-5"
                 >
-                  <>
                     <div
                       className={`border-dashed !textdarkselect border-2 borderdark4 flex w-full h-48 items-center justify-center  cursor-pointer mb-2`}
                     >
@@ -442,13 +441,13 @@ export default function Home() {
                         labelSel="Visibilidade:"
                       />
                     </div>
-                    <Textarea
+                    {/* <Textarea
                       name="descricao"
                       typeSel="textarea"
                       placeholderSel="descricao aqui"
                       classSel="w-full lg:px-3 !m-0 py-2 bg-transparent outline-none w-[100%]"
                       labelSel="Descricão:"
-                    />
+                    /> */}
                     <div className="flex gap-2">
                       <button
                         type="button"
@@ -458,7 +457,6 @@ export default function Home() {
                         Fechar
                       </button>
                     </div>
-                  </>
                 </Form>
               </Dialog.Panel>
             </div>
