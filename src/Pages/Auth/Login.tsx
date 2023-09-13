@@ -63,13 +63,12 @@ const Login = () => {
         email: data.email,
         password: data.senha,
       })
-      .then((res) => {
+      .then(() => {
         setAlert({
-          description: "Usuário cadastrado!",
+          description: "Usuário cadastrado! Por favor logue!",
           open: true,
           type: "success",
         });
-        console.log(res);
       })
       .catch((error) => {
         setAlert({
@@ -96,8 +95,16 @@ const Login = () => {
         email: user.data.email,
         password: "",
       })
-      .then((res) => {
-        console.log(res);
+      .then(async (res) => {
+        setAlert({
+          description: "Usuário logado!",
+          open: true,
+          type: "success",
+        });
+
+        setTimeout(() => {
+          history("/home");
+        }, 2000);
       })
       .catch((error) => console.error(error));
   };
@@ -120,12 +127,18 @@ const Login = () => {
         email: data.email,
         password: data.senha,
       })
-      .then(() => {
+      .then((res) => {
         setAlert({
           description: "Usuário logado!",
           open: true,
           type: "success",
         });
+
+        localStorage.setItem("user_token", JSON.stringify(res.data.token));
+
+        setTimeout(() => {
+          history("/home");
+        }, 2000);
       })
       .catch((error) => {
         console.log(error);
@@ -308,6 +321,25 @@ const Login = () => {
                     Entrar
                   </button>
                 </div>
+                <div className="mt-7 h-[50px] py-10 flex items-center w-full rounded-md">
+                  <div className="flex flex-col w-full items-center justify-center ">
+                    <div className="flex space-x-4 w-full">
+                      <button
+                        type="button"
+                        onClick={() => loginWithGoogle()}
+                        className="!border-gray-300 !border-[1px] cursor-pointer !pointer-events-auto !w-full flex items-center justify-center bg-white p-3 !rounded-md !duration-300 !text-[#e44a2fc0] hover:!bg-gray-300">
+                        <FaGoogle size={18} />
+                      </button>
+                    </div>
+                    <a
+                      onClick={() => {
+                        history("/forgotpassword");
+                      }}
+                      className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
+                      Esqueceu sua senha?
+                    </a>
+                  </div>
+                </div>
               </motion.div>
 
               <div className="mt-10 h-[50px] py-10 flex items-center w-full rounded-md">
@@ -319,18 +351,6 @@ const Login = () => {
                     className="text-gray-800 dark:text-gray-300 text-sm underline py-5 cursor-pointer duration-300">
                     Esqueceu sua senha?
                   </a>
-                  <div className="flex space-x-4 ">
-                    <a
-                      href=""
-                      className="border-gray-600 border-[1px] p-3 rounded-full duration-300 text-[#e44a2fc0] hover:bg-[#e44a2fc0] hover:text-white">
-                      <FaGoogle size={18} />
-                    </a>
-                    <a
-                      href=""
-                      className="border-gray-600 border-[1px] p-3 rounded-full duration-300 text-[#2f52b3] hover:bg-[#2f52b3] hover:text-white">
-                      <FaFacebookF size={18} />
-                    </a>
-                  </div>
                 </div>
               </div>
             </Form>

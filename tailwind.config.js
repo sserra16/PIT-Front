@@ -11,6 +11,7 @@ export default {
     extend: {
       backgroundImage: {
         login: "url('/src/assets/bg-login.jpg')",
+        user: "url('/src/assets/user-solid.svg')"
       },
     },
     screens: {
@@ -26,5 +27,7 @@ export default {
       xl: "1280px",
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar')
+  ],
 };
