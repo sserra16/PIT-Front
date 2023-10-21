@@ -21,7 +21,7 @@ import { buscarEventos } from "../api/functions/BuscarEventos.ts";
 import SelectCategoria from "../Components/SelectCategoria.tsx";
 import IconeCategoria from "../Components/IconeCategoria.tsx";
 import { FaUser } from "react-icons/fa";
-import { BiLogOut } from "react-icons/bi";
+import { BiLogOut, BiMapAlt } from "react-icons/bi";
 
 // import { BsFillGearFill } from "react-icons/bs";
 // import { useDark } from "../Hooks/dark";
@@ -635,8 +635,12 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-6">
-            <h1 className="text-lg font-semibold hover:text-[#3c75cc] transition-all text-gray-600 cursor-pointer">Meus eventos</h1>
-            <button onClick={() => history('/login')} className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+            <h1 className="text-lg font-semibold hover:text-[#3c75cc] transition-all text-gray-600 cursor-pointer">
+              Meus eventos
+            </h1>
+            <button
+              onClick={() => history("/login")}
+              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
               <BiLogOut className="text-2xl" />
             </button>
           </div>
@@ -646,11 +650,17 @@ export default function Home() {
             <h1 className="opacity-40 text-black font-semibold text-2xl">
               Eventos
             </h1>
-            <button
-              onClick={() => setIsOpen(true)}
-              className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
-              Criar novo
-            </button>
+
+            <div className="flex items-center gap-4">
+              <button className="bg-yellow-500 hover:bg-yellow-600 py-2 px-4 text-white rounded-lg transition-all">
+                <BiMapAlt className="text-2xl" />
+              </button>
+              <button
+                onClick={() => setIsOpen(true)}
+                className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+                Criar novo
+              </button>
+            </div>
           </div>
 
           {loadPage ? (

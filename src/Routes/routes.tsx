@@ -11,6 +11,7 @@ import Layout from "../Pages/Auth/Layout";
 import Home from "../Pages/Home";
 import NotAuthenticaded from "../Pages/NotAuthenticaded";
 import Landing from "../Pages/Landing";
+import MapContainer from "../Pages/Mapa";
 // import Layout from "../Pages/Auth/Layout";
 
 const Routes: React.FC = () => {
@@ -44,6 +45,7 @@ const Routes: React.FC = () => {
           }
         />
         <Route path="/home" element={<Home />} />
+        <Route path="/mapa" element={<MapContainer />} />
         <Route path="/erro" element={<NotAuthenticaded />} />
       </RoutesDOMRoute>
     </BrowserRouter>
