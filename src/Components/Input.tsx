@@ -65,7 +65,7 @@ export const Input = ({
             error
               ? " border border-red-500 dark:border-red-500"
               : "focus:outline-[#3c75cc] outline-offset-0 border border-gray-300 dark:border-gray-700"
-          } transition-all placeholder:text-gray-400 dark:placeholder:text-gray-400 flex w-full items-center px-2 justify-between duration-300 rounded-md mx-auto my-3`}
+          } transition-all placeholder:text-gray-400 bg-gray-50 dark:placeholder:text-gray-400 flex w-full items-center px-2 justify-between duration-300 rounded-md mx-auto my-3`}
           placeholder={placeholderSel}
           type={typeSel}
           defaultValue={valueSel ? valueSel : ""}

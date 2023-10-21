@@ -14,8 +14,7 @@ const darkModeContext = createContext<darkData>({} as darkData);
 
 const DarkModeProvider: React.FC<Props> = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
-    if (localStorage.getItem("dark") == "true") return false;
-    else return true;
+    return localStorage.getItem("dark") != "true";
   });
 
   useEffect(() => {

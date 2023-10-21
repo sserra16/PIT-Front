@@ -12,7 +12,7 @@ function Layout({ children }: props) {
 
   return (
     <div className="w-full flex flex-col sm:flex-row bg-login bg-cover">
-      <div className="flex justify-center w-full lg:w-[40%] dark:bg-[#2b2b2b] bg-white pt-4 items-center h-screen duration-300">
+      <div className="flex justify-center w-full lg:w-[40%] dark:bg-[#2b2b2b] bg-[#f3f3f3] pt-4 items-center h-screen duration-300">
         <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] flex ">
           {isDark ? (
             <FiSun onClick={setDark} className="cursor-pointer" />
@@ -20,7 +20,7 @@ function Layout({ children }: props) {
             <HiOutlineMoon onClick={setLight} className="cursor-pointer" />
           )}
         </div>
-        <div className="w-full h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-white flex flex-col justify-center items-center">
+        <div className="w-full h-full lg:h-[70%] pl-12 pr-16 duration-300 dark:bg-[#2b2b2b] bg-[#f3f3f3] flex flex-col justify-center items-center">
           {children}
         </div>
       </div>

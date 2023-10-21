@@ -19,7 +19,7 @@ type InputProps = JSX.IntrinsicElements["input"] & Props;
 export default function File({ name, classSel, descricao, ...rest }: InputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { fieldName, registerField, defaultValue, error } = useField(name);
+  const { fieldName, registerField, defaultValue } = useField(name);
   const [preview, setPreview] = useState(defaultValue);
 
   const handlePreview = useCallback((e: ChangeEvent<HTMLInputElement>) => {

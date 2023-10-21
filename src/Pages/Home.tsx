@@ -1,8 +1,7 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef } from "react";
 import user from "../assets/user-solid.svg";
 import { FormHandles } from "@unform/core";
-import trash from "../assets/trash-solid.svg";
-import pen from "../assets/pen-to-square-solid.svg";
+import { Evento } from "../types/evento.ts";
 import { api } from "../api/api";
 import { Dialog } from "@headlessui/react";
 import { Form } from "@unform/web";
@@ -10,90 +9,81 @@ import { Input } from "../Components/Input";
 import File from "../Components/File";
 import Radio from "../Components/Radio";
 import { AnimatePresence, motion } from "framer-motion";
-import { BsInfoLg } from "react-icons/bs";
+import { BsPencil } from "react-icons/bs";
+import { AiFillLock } from "react-icons/ai";
+import { HiMiniMapPin } from "react-icons/hi2";
 import { Textarea } from "../Components/textarea";
 import { useNavigate } from "react-router-dom";
-import { BsFillGearFill } from "react-icons/bs";
+import { useUser } from "../Hooks/user.tsx";
+import LinearProgress from "@mui/material/LinearProgress";
+import { buscarUsuario } from "../api/functions/BuscarUsuario.ts";
+import { buscarEventos } from "../api/functions/BuscarEventos.ts";
+import SelectCategoria from "../Components/SelectCategoria.tsx";
+import IconeCategoria from "../Components/IconeCategoria.tsx";
+import { FaUser } from "react-icons/fa";
+
+// import { BsFillGearFill } from "react-icons/bs";
 // import { useDark } from "../Hooks/dark";
 // import { FiSun } from "react-icons/fi";
 // import { HiOutlineMoon } from "react-icons/hi";
 
 export default function Home() {
-  const history = useNavigate();
-  const [usuario, setUsuario] = useState<any>({});
+  const { usuario, setUsuario } = useUser();
+  const [loadPage, setLoadPage] = useState(false);
   const [image, setImages] = useState("");
-  const [eventos, setEventos] = useState([]);
-
-  const buscarUsuario = useCallback(
-    (image = false) => {
-      const tokenLocal = localStorage.getItem("user_token");
-      let token: any;
-
-      if (!tokenLocal) {
-        history("/erro");
-        return;
-      } else {
-        token = JSON.parse(tokenLocal);
-      }
-
-      api
-        .get("authenticate", {
-          headers: {
-            Authorization: `${token.type} ${token.token}`,
-          },
-        })
-        .then((res) => {
-          setUsuario(res.data.user);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
-      if (image) {
-        api
-          .get(`/getimage/${usuario.id}`)
-          .then((res) => {
-            // const blob = new Blob([res.data], { type: "image/jpeg" });
-            // const imageURL = URL.createObjectURL(blob);
-
-            // setImages(imageURL);
-
-            console.log(res);
-          })
-          .catch((error) => console.error(error));
-      }
-    },
-    [history, usuario.id]
-  );
-
-  const buscarEventos = useCallback(() => {
-    api
-      .get("/eventos")
-      .then((res) => {
-        setEventos(res.data);
-      })
-      .catch((e) => console.error(e));
-  }, []);
-
-  useEffect(() => {
-    buscarUsuario(false);
-    buscarEventos();
-  }, [buscarUsuario, buscarEventos]);
-
-  // const { isDark, setDark, setLight } = useDark();
-
+  const [eventos, setEventos] = useState<Evento[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenEx, setIsOpenEx] = useState(false);
   const [isOpenEdit, setIsOpenEdit] = useState(false);
   const [isOpenPerfil, setIsOpenPerfil] = useState(false);
   const [isOpenInfo, setisOpenInfo] = useState(false);
   const [idAtual, setIdAtual] = useState<number>(0);
+
   const formRef = useRef<FormHandles>(null);
   const formRef3 = useRef<FormHandles>(null);
   const formRef4 = useRef<FormHandles>(null);
   const formRef5 = useRef<FormHandles>(null);
+  const history = useNavigate();
 
-  function handleCreateEvent(data: any) {
+  const tokenLocal = localStorage.getItem("user_token");
+  let token: { type: string; token: string };
+
+  /* Validando se o usuário está logado */
+  if (!tokenLocal) {
+    history("/erro");
+  } else {
+    token = JSON.parse(tokenLocal);
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await buscarUsuario(token)
+        .then((res) => {
+          if (res.imageUrl) {
+            setImages(res.imageUrl);
+          }
+          setUsuario(res);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+
+      await buscarEventos()
+        .then((res) => {
+          setEventos(res);
+          setLoadPage(true);
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    };
+
+    fetchData();
+  }, []);
+
+  // const { isDark, setDark, setLight } = useDark();
+
+  async function handleCreateEvent(data: any) {
     if (data.descricao === "") {
       formRef.current?.setFieldError("descricao", "A descrição é obrigatória");
       return;
@@ -105,11 +95,19 @@ export default function Home() {
       return;
     }
 
-    api
+    await api
       .post("createevento", {
         descricao: data.descricao,
         visibilidade: data.visibilidade == "0" ? false : true,
         quantidade: data.quantidade,
+        id_categoria: data.categoria,
+        id_usuario: usuario.id,
+        cep: data.cep,
+        cidade: data.cidade,
+        estado: data.estado,
+        pais: data.pais,
+        rua: data.rua,
+        quantidade_atual: 0,
       })
       .then((res) => {
         console.log(res);
@@ -119,29 +117,11 @@ export default function Home() {
       });
 
     setIsOpen(false);
-    buscarEventos();
+    const eventos = await buscarEventos();
+    setEventos(eventos);
   }
 
   async function handleEditPerfil(data: any) {
-    let image = false;
-
-    if (data.imagem) {
-      const imageData = new FormData();
-      imageData.append("imagem", data.imagem);
-      imageData.append("id", usuario.id);
-
-      await api
-        .post("/insereimagem", imageData)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-
-      image = true;
-    }
-
     await api
       .post("/edituser", {
         id: usuario.id,
@@ -154,9 +134,30 @@ export default function Home() {
         console.error(error);
       });
 
+    if (data.imagem) {
+      const imageData = new FormData();
+      imageData.append("imagem", data.imagem);
+      imageData.append("id", usuario.id ? usuario.id.toString() : "");
+
+      await api
+        .post("/insereimagem", imageData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
     setIsOpenPerfil(false);
-    buscarUsuario(image);
+    const user = await buscarUsuario(token);
+    setUsuario(user);
+
+    if (user.imageUrl) {
+      setImages(user.imageUrl);
+    }
   }
+
   async function handleEditEvent(data: any) {
     await api
       .post("/editevento", {
@@ -169,19 +170,29 @@ export default function Home() {
       .catch((error) => console.error(error));
 
     setIsOpenEdit(false);
-    buscarEventos();
+    const eventos = await buscarEventos();
+    setEventos(eventos);
   }
+
   function handleInfoPerfil(data: any) {
     /* AHAHHAHAHAHHAHA */
   }
 
-  function handleDestroyEvent(id: number) {
-    api
+  async function handleDestroyEvent(id: number) {
+    await api
       .post("destroyevent", { id })
-      .then(() => buscarEventos())
       .catch((error) => console.error(error));
 
+    const eventos = await buscarEventos();
+    setEventos(eventos);
+
     setIsOpenEx(false);
+  }
+
+  async function HandleParticipa(id: number) {
+    await api.post("/participar", { id });
+    const eventos = await buscarEventos();
+    setEventos(eventos);
   }
 
   const options = [
@@ -206,54 +217,147 @@ export default function Home() {
             <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
 
             <div className="fixed inset-0 flex items-center justify-center p-4">
-              <Dialog.Panel className="w-full max-w-sm rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
+              <Dialog.Panel className="w-full max-w-4xl rounded-xl flex flex-col gap-5 items-center p-10 justify-center bg-white">
                 <h1 className="opacity-40 text-black font-semibold text-xl">
                   Novo
                 </h1>
                 <Form
                   ref={formRef}
                   onSubmit={handleCreateEvent}
-                  className="flex flex-col gap-5">
-                  <Input
-                    name="descricao"
-                    typeSel="text"
-                    placeholderSel="Descrição"
-                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
-                  />
-                  <div className="flex items-start flex-col gap-2">
-                    <h1 className="opacity-60 text-black font-semibold text-lg">
-                      Visibilidade
-                    </h1>
+                  className="flex gap-5">
+                  <div className="flex flex-col">
+                    <div className="flex gap-4">
+                      <div className="flex flex-col">
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Descrição
+                          </h1>
 
-                    <Radio
-                      name="visibilidade"
-                      options={options as any}
-                      defaultChecked
-                    />
-                  </div>
-                  <Input
-                    name="quantidade"
-                    typeSel="number"
-                    placeholderSel="Quantidade de pessoas "
-                    classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
-                  />
-                  <File
-                    descricao="Inserir imagem"
-                    classSel="w-full h-36"
-                    name="imagemevento"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsOpen(false)}
-                      className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
-                      Cancelar
-                    </button>
-                    <button
-                      type="submit"
-                      className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
-                      Cadastrar
-                    </button>
+                          <Input
+                            name="descricao"
+                            typeSel="text"
+                            placeholderSel="Descrição"
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+
+                        <div className="flex items-start h-full flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Visibilidade
+                          </h1>
+
+                          <Radio
+                            name="visibilidade"
+                            options={options as any}
+                            defaultChecked
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Quantidade
+                          </h1>
+                          <Input
+                            name="quantidade"
+                            typeSel="number"
+                            placeholderSel="Quantidade de pessoas "
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+
+                        <div className="flex items-start flex-col">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Categoria
+                          </h1>
+
+                          <SelectCategoria />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Rua
+                          </h1>
+                          <Input
+                            name="rua"
+                            typeSel="text"
+                            placeholderSel="Rua Avelino ..."
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Cidade
+                          </h1>
+
+                          <Input
+                            name="cidade"
+                            typeSel="text"
+                            placeholderSel="Esmeraldas"
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            CEP
+                          </h1>
+                          <Input
+                            name="cep"
+                            typeSel="text"
+                            placeholderSel="32490042"
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            País
+                          </h1>
+
+                          <Input
+                            name="pais"
+                            typeSel="text"
+                            placeholderSel="Brasil"
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <div className="flex items-start flex-col gap-2">
+                          <h1 className="opacity-60 text-black font-semibold text-lg">
+                            Estado
+                          </h1>
+                          <Input
+                            name="estado"
+                            typeSel="text"
+                            placeholderSel="Minas Gerais"
+                            classSel="w-full lg:px-3 py-2 bg-transparent outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-4">
+                      <button
+                        type="button"
+                        onClick={() => setIsOpen(false)}
+                        className="bg-gray-500 py-2 w-full px-6 text-white rounded-lg hover:bg-gray-600 transition-all">
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="bg-[#3c75cc] py-2 w-full px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+                        Cadastrar
+                      </button>
+                    </div>
                   </div>
                 </Form>
               </Dialog.Panel>
@@ -500,8 +604,7 @@ export default function Home() {
       </AnimatePresence>
 
       <div className="bg-gray-200 flex flex-col gap-5 w-100 h-screen px-36 py-6">
-        <img src={image} alt="" width={30} />
-        <div className="flex gap-4 items-center h-14">
+        <div className="flex gap-4 items-center py-2">
           {/* <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] flex items-center">
             {isDark ? (
               <FiSun onClick={setDark} className="cursor-pointer" />
@@ -513,8 +616,17 @@ export default function Home() {
             onClick={() => {
               setIsOpenPerfil(true);
             }}
-            className="rounded-full border-[0.3px] border-black border-opacity-25 p-4 w-14 h-14 cursor-pointer flex items-center justify-center">
-            <BsFillGearFill />
+            className="group relative rounded-full hover:before:content-[''] hover:before:absolute hover:before:-inset-1 hover:before:bg-black hover:before:opacity-50 border-[0.3px] border-black border-opacity-25 overflow-hidden w-20 h-20 cursor-pointer flex items-center justify-center">
+            <img
+              src={image ? image : user}
+              alt=""
+              className={`${
+                image
+                  ? "w-full h-full object-cover"
+                  : "w-full h-full object-contain p-5"
+              }`}
+            />
+            <BsPencil className="hidden group-hover:block absolute text-white" />
           </div>
           <h1>
             Olá <strong>{usuario.username}!</strong>
@@ -532,71 +644,66 @@ export default function Home() {
             </button>
           </div>
 
-          <table className="w-full text-sm text-left text-gray-400">
-            <thead className="text-xs uppercase text-gray-400 border-b border-[#000] border-opacity-25">
-              <tr>
-                <th scope="col" className="px-6 py-3">
-                  Opções
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Id
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Descrição
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Visibilidade
-                </th>
-                <th scope="col" className="px-6 py-3">
-                  Quantidade
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {eventos.map((item: any, index) => {
+          {loadPage ? (
+            <div className="flex gap-5 flex-wrap justify-start">
+              {eventos.length > 0 ? eventos.map((item, index) => {
                 return (
-                  <tr
+                  <div
                     key={index}
-                    className="border-b border-[#000] border-opacity-25 text-black text-opacity-80">
-                    <td className="flex gap-1 mt-3">
+                    className="rounded-lg bg-white p-4 flex flex-col gap-8">
+                    <div className="flex items-center justify-between gap-16">
+                      <div className="flex gap-3 items-center">
+                        <IconeCategoria id={item.id_categoria} />
+                        <p className="text-gray-500">{item.categoria}</p>
+                      </div>
+                      <div className="flex gap-1 items-center text-gray-600">
+                        <HiMiniMapPin className="opacity-60 text-xl" />
+                        <p>{`${item.rua} ${item.cidade}`}</p>
+                      </div>
+                    </div>
+                    <h1 className="flex gap-2 items-center text-2xl font-bold">
+                      {item.descricao}{" "}
+                      {item.visibilidade ? (
+                        ""
+                      ) : (
+                        <AiFillLock className="text-red-500" />
+                      )}
+                    </h1>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FaUser className="text-gray-700" />
+                        <h1 className="">
+                          {item.quantidade_atual}
+                          <span className="font-normal text-gray-800"> / </span>
+                          <span className="text-blue-400 font-bold">
+                            {item.quantidade_maxima}
+                          </span>
+                        </h1>
+                      </div>
                       <button
-                        onClick={() => {
-                          setIdAtual(item.id);
-                          setIsOpenEdit(true);
-                        }}
-                        className="bg-[#3c75cc] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#284eb6] transition-all">
-                        <img src={pen} width={10} alt="" />
+                        onClick={() => HandleParticipa(item.id)}
+                        disabled={
+                          item.quantidade_atual < item.quantidade_maxima
+                            ? false
+                            : true
+                        }
+                        className="bg-[#3c75cc] py-1 px-12 text-white rounded-lg hover:bg-[#284eb6] transition-all disabled:cursor-not-allowed disabled:brightness-90">
+                        Participar
                       </button>
-                      <button
-                        onClick={() => {
-                          setIdAtual(item.id);
-                          setIsOpenEx(true);
-                        }}
-                        className="bg-[#D73838] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#a92b2b] transition-all">
-                        <img src={trash} width={10} alt="" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIdAtual(index);
-                          setisOpenInfo(true);
-                        }}
-                        className="bg-[#eacb22] rounded-lg flex items-center justify-center w-6 h-6 ml-3 hover:bg-[#D9BC1F] transition-all">
-                        <BsInfoLg className="!text-white" />
-                      </button>
-                    </td>
-                    <td className="px-6 py-4">{item.id}</td>
-                    <td className="px-6 py-4">{item.descricao}</td>
-                    <td className="px-6 py-4">
-                      {item.visibilidade == 1 ? "Público" : "Privado"}
-                    </td>
-                    <td className="px-6 py-4">{item.quantidade}</td>
-                  </tr>
+                    </div>
+                  </div>
                 );
-              })}
-            </tbody>
-          </table>
+              }) : <h1 className="text-gray-600 text-xl">Nenhum evento disponível, volte mais tarde! 😁</h1>}
+            </div>
+          ) : (
+            <LinearProgress className="!w-full" />
+          )}
         </div>
       </div>
     </>
   );
+}
+
+{
+  /*  */
 }

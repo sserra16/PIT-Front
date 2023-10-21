@@ -109,11 +109,19 @@ const Login = () => {
       })
       .catch((error) => {
         console.error(error);
-        setAlert({
-          open: true,
-          description: error.response.data.msg,
-          type: "error",
-        });
+        if (error.response.data.msg) {
+          setAlert({
+            open: true,
+            description: error.response.data.msg,
+            type: "error",
+          });
+        } else {
+          setAlert({
+            open: true,
+            description: "Ocorreu um erro ao logar, contate o suporte",
+            type: "error",
+          });
+        }
       });
   };
 
