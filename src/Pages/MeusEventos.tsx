@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../Hooks/user.tsx";
 import LinearProgress from "@mui/material/LinearProgress";
 import { buscarUsuario } from "../api/functions/BuscarUsuario.ts";
-import { buscarEventos } from "../api/functions/BuscarEventos.ts";
+import { buscarMeusEventos } from "../api/functions/BuscarEventos.ts";
 import SelectCategoria from "../Components/SelectCategoria.tsx";
 import IconeCategoria from "../Components/IconeCategoria.tsx";
 import { FaUser } from "react-icons/fa";
@@ -28,7 +28,7 @@ import { BiLogOut, BiMapAlt } from "react-icons/bi";
 // import { FiSun } from "react-icons/fi";
 // import { HiOutlineMoon } from "react-icons/hi";
 
-export default function Home() {
+export default function MeusEventos() {
   const { usuario, setUsuario } = useUser();
   const [loadPage, setLoadPage] = useState(false);
   const [image, setImages] = useState("");
@@ -69,7 +69,7 @@ export default function Home() {
           throw new Error(error);
         });
 
-      await buscarEventos()
+      await buscarMeusEventos(usuario.id ? usuario.id : 4)
         .then((res) => {
           setEventos(res);
           setLoadPage(true);
@@ -118,7 +118,7 @@ export default function Home() {
       });
 
     setIsOpen(false);
-    const eventos = await buscarEventos();
+    const eventos = await buscarMeusEventos(usuario.id ? usuario.id : 4);
     setEventos(eventos);
   }
 
@@ -171,7 +171,7 @@ export default function Home() {
       .catch((error) => console.error(error));
 
     setIsOpenEdit(false);
-    const eventos = await buscarEventos();
+    const eventos = await buscarMeusEventos(usuario.id ? usuario.id : 4);
     setEventos(eventos);
   }
 
@@ -184,7 +184,7 @@ export default function Home() {
       .post("destroyevent", { id })
       .catch((error) => console.error(error));
 
-    const eventos = await buscarEventos();
+    const eventos = await buscarMeusEventos(usuario.id ? usuario.id : 4);
     setEventos(eventos);
 
     setIsOpenEx(false);
@@ -192,7 +192,7 @@ export default function Home() {
 
   async function HandleParticipa(id: number) {
     await api.post("/participar", { id });
-    const eventos = await buscarEventos();
+    const eventos = await buscarMeusEventos(usuario.id ? usuario.id : 4);
     setEventos(eventos);
   }
 
@@ -635,19 +635,11 @@ export default function Home() {
             </h1>
           </div>
           <div className="flex items-center gap-6">
-            <h1
-              onClick={() => history("/meus")}
-              className="text-lg font-semibold hover:text-[#3c75cc] transition-all text-gray-600 cursor-pointer">
-              Meus eventos
+            <h1 onClick={() => history('/home')} className="text-lg font-semibold hover:text-[#3c75cc] transition-all text-gray-600 cursor-pointer">
+              Todos Eventos
             </h1>
             <button
-              onClick={() => {
-                api
-                  .get("/logout")
-                  .then((res) => console.log(res))
-                  .catch((error) => console.error(error));
-                history("/login");
-              }}
+              onClick={() => history("/login")}
               className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
               <BiLogOut className="text-2xl" />
             </button>
@@ -656,7 +648,7 @@ export default function Home() {
         <div className="rounded-xl bg-[#D0D0D0] p-6 overflow-x-scroll scrollbar-track-[#3c75cc] scrollbar-thumb-white scrollbar-thin">
           <div className="flex justify-between py-6">
             <h1 className="opacity-40 text-black font-semibold text-2xl">
-              Eventos
+              Meus Eventos
             </h1>
 
             <div className="flex items-center gap-4">
@@ -680,7 +672,7 @@ export default function Home() {
                   return (
                     <div
                       key={index}
-                      className="rounded-lg bg-white p-4 flex flex-col min-w-full gap-8">
+                      className="rounded-lg bg-white p-4 flex flex-col gap-8">
                       <div className="flex items-center justify-between gap-16">
                         <div className="flex gap-3 items-center">
                           <IconeCategoria id={item.id_categoria} />
@@ -700,23 +692,18 @@ export default function Home() {
                         )}
                       </h1>
                       <div className="flex items-center justify-between">
-                        <div className="flex flex-col items-start gap-2">
-                          <div className="flex gap-2 items-center">
-                            <FaUser className="text-gray-700" />
-                            {item.usuario}
-                          </div>
-                          <div>
-                            <h1 className="">
-                              {item.quantidade_atual}
-                              <span className="font-normal text-gray-800">
-                                {" "}
-                                /{" "}
-                              </span>
-                              <span className="text-blue-400 font-bold">
-                                {item.quantidade_maxima}
-                              </span>
-                            </h1>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          <FaUser className="text-gray-700" />
+                          <h1 className="">
+                            {item.quantidade_atual}
+                            <span className="font-normal text-gray-800">
+                              {" "}
+                              /{" "}
+                            </span>
+                            <span className="text-blue-400 font-bold">
+                              {item.quantidade_maxima}
+                            </span>
+                          </h1>
                         </div>
                         <button
                           onClick={() => HandleParticipa(item.id)}
@@ -734,7 +721,7 @@ export default function Home() {
                 })
               ) : (
                 <h1 className="text-gray-600 text-xl">
-                  Nenhum evento disponível, volte mais tarde! 😁
+                  Você não criou nenhum evento, crie agora!!⬆️
                 </h1>
               )}
             </div>
