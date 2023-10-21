@@ -21,6 +21,7 @@ import { buscarEventos } from "../api/functions/BuscarEventos.ts";
 import SelectCategoria from "../Components/SelectCategoria.tsx";
 import IconeCategoria from "../Components/IconeCategoria.tsx";
 import { FaUser } from "react-icons/fa";
+import { BiLogOut } from "react-icons/bi";
 
 // import { BsFillGearFill } from "react-icons/bs";
 // import { useDark } from "../Hooks/dark";
@@ -604,33 +605,41 @@ export default function Home() {
       </AnimatePresence>
 
       <div className="bg-gray-200 flex flex-col gap-5 w-100 h-screen px-36 py-6">
-        <div className="flex gap-4 items-center py-2">
-          {/* <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] flex items-center">
+        <div className="w-full flex items-center justify-between">
+          <div className="flex gap-4 items-center py-2">
+            {/* <div className="text-gray-700 dark:text-white text-[130%] h-full justify-start ml-[1rem] flex items-center">
             {isDark ? (
               <FiSun onClick={setDark} className="cursor-pointer" />
-            ) : (
-              <HiOutlineMoon onClick={setLight} className="cursor-pointer" />
-            )}
-          </div> */}
-          <div
-            onClick={() => {
-              setIsOpenPerfil(true);
-            }}
-            className="group relative rounded-full hover:before:content-[''] hover:before:absolute hover:before:-inset-1 hover:before:bg-black hover:before:opacity-50 border-[0.3px] border-black border-opacity-25 overflow-hidden w-20 h-20 cursor-pointer flex items-center justify-center">
-            <img
-              src={image ? image : user}
-              alt=""
-              className={`${
-                image
-                  ? "w-full h-full object-cover"
-                  : "w-full h-full object-contain p-5"
-              }`}
-            />
-            <BsPencil className="hidden group-hover:block absolute text-white" />
+              ) : (
+                <HiOutlineMoon onClick={setLight} className="cursor-pointer" />
+                )}
+              </div> */}
+            <div
+              onClick={() => {
+                setIsOpenPerfil(true);
+              }}
+              className="group relative rounded-full hover:before:content-[''] hover:before:absolute hover:before:-inset-1 hover:before:bg-black hover:before:opacity-50 border-[0.3px] border-black border-opacity-25 overflow-hidden w-20 h-20 cursor-pointer flex items-center justify-center">
+              <img
+                src={image ? image : user}
+                alt=""
+                className={`${
+                  image
+                    ? "w-full h-full object-cover"
+                    : "w-full h-full object-contain p-5"
+                }`}
+              />
+              <BsPencil className="hidden group-hover:block absolute text-white" />
+            </div>
+            <h1>
+              Olá <strong>{usuario.username}!</strong>
+            </h1>
           </div>
-          <h1>
-            Olá <strong>{usuario.username}!</strong>
-          </h1>
+          <div className="flex items-center gap-6">
+            <h1 className="text-lg font-semibold hover:text-[#3c75cc] transition-all text-gray-600 cursor-pointer">Meus eventos</h1>
+            <button onClick={() => history('/login')} className="bg-[#3c75cc] py-2 px-6 text-white rounded-lg hover:bg-[#284eb6] transition-all">
+              <BiLogOut className="text-2xl" />
+            </button>
+          </div>
         </div>
         <div className="rounded-xl bg-[#D0D0D0] p-6 overflow-x-scroll scrollbar-track-[#3c75cc] scrollbar-thumb-white scrollbar-thin">
           <div className="flex justify-between py-6">
@@ -646,54 +655,63 @@ export default function Home() {
 
           {loadPage ? (
             <div className="flex gap-5 flex-wrap justify-start">
-              {eventos.length > 0 ? eventos.map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="rounded-lg bg-white p-4 flex flex-col gap-8">
-                    <div className="flex items-center justify-between gap-16">
-                      <div className="flex gap-3 items-center">
-                        <IconeCategoria id={item.id_categoria} />
-                        <p className="text-gray-500">{item.categoria}</p>
+              {eventos.length > 0 ? (
+                eventos.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-lg bg-white p-4 flex flex-col gap-8">
+                      <div className="flex items-center justify-between gap-16">
+                        <div className="flex gap-3 items-center">
+                          <IconeCategoria id={item.id_categoria} />
+                          <p className="text-gray-500">{item.categoria}</p>
+                        </div>
+                        <div className="flex gap-1 items-center text-gray-600">
+                          <HiMiniMapPin className="opacity-60 text-xl" />
+                          <p>{`${item.rua} ${item.cidade}`}</p>
+                        </div>
                       </div>
-                      <div className="flex gap-1 items-center text-gray-600">
-                        <HiMiniMapPin className="opacity-60 text-xl" />
-                        <p>{`${item.rua} ${item.cidade}`}</p>
+                      <h1 className="flex gap-2 items-center text-2xl font-bold">
+                        {item.descricao}{" "}
+                        {item.visibilidade ? (
+                          ""
+                        ) : (
+                          <AiFillLock className="text-red-500" />
+                        )}
+                      </h1>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <FaUser className="text-gray-700" />
+                          <h1 className="">
+                            {item.quantidade_atual}
+                            <span className="font-normal text-gray-800">
+                              {" "}
+                              /{" "}
+                            </span>
+                            <span className="text-blue-400 font-bold">
+                              {item.quantidade_maxima}
+                            </span>
+                          </h1>
+                        </div>
+                        <button
+                          onClick={() => HandleParticipa(item.id)}
+                          disabled={
+                            item.quantidade_atual < item.quantidade_maxima
+                              ? false
+                              : true
+                          }
+                          className="bg-[#3c75cc] py-1 px-12 text-white rounded-lg hover:bg-[#284eb6] transition-all disabled:cursor-not-allowed disabled:brightness-90">
+                          Participar
+                        </button>
                       </div>
                     </div>
-                    <h1 className="flex gap-2 items-center text-2xl font-bold">
-                      {item.descricao}{" "}
-                      {item.visibilidade ? (
-                        ""
-                      ) : (
-                        <AiFillLock className="text-red-500" />
-                      )}
-                    </h1>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <FaUser className="text-gray-700" />
-                        <h1 className="">
-                          {item.quantidade_atual}
-                          <span className="font-normal text-gray-800"> / </span>
-                          <span className="text-blue-400 font-bold">
-                            {item.quantidade_maxima}
-                          </span>
-                        </h1>
-                      </div>
-                      <button
-                        onClick={() => HandleParticipa(item.id)}
-                        disabled={
-                          item.quantidade_atual < item.quantidade_maxima
-                            ? false
-                            : true
-                        }
-                        className="bg-[#3c75cc] py-1 px-12 text-white rounded-lg hover:bg-[#284eb6] transition-all disabled:cursor-not-allowed disabled:brightness-90">
-                        Participar
-                      </button>
-                    </div>
-                  </div>
-                );
-              }) : <h1 className="text-gray-600 text-xl">Nenhum evento disponível, volte mais tarde! 😁</h1>}
+                  );
+                })
+              ) : (
+                <h1 className="text-gray-600 text-xl">
+                  Nenhum evento disponível, volte mais tarde! 😁
+                </h1>
+              )}
             </div>
           ) : (
             <LinearProgress className="!w-full" />
