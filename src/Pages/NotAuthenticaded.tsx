@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function NotAuthenticaded() {
@@ -17,7 +16,7 @@ export default function NotAuthenticaded() {
                 Desculpe, mas volte à página de login e faça o seu cadastro!!
               </p>
               <button
-                onClick={() => history("/")}
+                onClick={() => history("/login")}
                 className="bg-[#3c75cc] h-[40px] lg:w-[100%] w-[100%] mx-auto px-4 text-white  rounded-md hover:bg-[#284eb6] duration-200 ">
                 Voltar ao login
               </button>

@@ -36,7 +36,7 @@ const Radio: React.FC<Props> = ({ name, options, ...rest }) => {
     <div className="flex items-center gap-4">
       {options.map((option, index) => (
         <h1
-          className="text-black opacity-50"
+          className="text-black dark:text-white opacity-50"
           key={option.id}>
           <input
             ref={(ref) => ref && (inputRefs.current[index] = ref)}

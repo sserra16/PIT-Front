@@ -90,7 +90,7 @@ function ForgotPassword() {
             </button>
             <a
               onClick={() => {
-                history("/");
+                history("/login");
               }}
               className="text-gray-800 dark:text-gray-300 text-sm underline cursor-pointer duration-300">
               Voltar ao login

@@ -40,7 +40,7 @@ export default function SelectCategoria() {
       id="categoria"
       name="categoria"
       ref={selectRef}
-      className="focus:outline-[#3c75cc] outline-offset-0 border border-gray-300 dark:border-gray-700 transition-all bg-gray-50 dark:placeholder:text-gray-400 flex w-full items-center px-2 justify-between duration-300 rounded-md my-2 py-2">
+      className="focus:outline-[#3c75cc] outline-offset-0 bg-transparent dark:text-gray-300 border border-gray-300 dark:border-gray-700 transition-all bg-gray-50 dark:placeholder:text-gray-400 flex w-full items-center px-2 justify-between duration-300 rounded-md mt-4 py-2">
       {categorias.map((item) => {
         return (
           <option className="text-gray-400" key={item.id} value={item.id}>

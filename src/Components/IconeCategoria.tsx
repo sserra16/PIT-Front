@@ -1,6 +1,5 @@
-import React from 'react'
 import { BiFootball } from 'react-icons/bi'
-import { PiConfettiBold } from 'react-icons/pi'
+import { TbConfetti } from 'react-icons/tb'
 import { BsMusicNoteList } from 'react-icons/bs'
 
 type Props = {
@@ -9,8 +8,8 @@ type Props = {
 
 export default function IconeCategoria({ id }: Props) {
   return (
-    <div className={`rounded-full p-2 ${id == '1' ? "bg-green-400" : id === '2' ? "bg-pink-300" : "bg-blue-400"}`}>
-      {id == '1' ? <BiFootball className="opacity-50" /> : id == '2' ? <PiConfettiBold className="opacity-50" /> : <BsMusicNoteList className="opacity-50" />}
+    <div className={`rounded-full p-2 ${id == '1' ? "bg-green-400" : id == '2' ? "bg-pink-300" : "bg-blue-400"}`}>
+      {id == '1' ? <BiFootball className="opacity-50 text-black" /> : id == '2' ? <TbConfetti className="opacity-50 text-black" /> : <BsMusicNoteList className="opacity-50 text-black" />}
     </div>
   )
 }

@@ -101,7 +101,7 @@ const Login = () => {
           type: "success",
         });
 
-        localStorage.setItem("user_token", JSON.stringify(res.data.token));
+        localStorage.setItem(`user_token`, JSON.stringify(res.data.token));
 
         setTimeout(() => {
           history("/home");
